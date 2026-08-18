@@ -44,25 +44,62 @@ export interface HeaderConfig {
   announcementBgColor: string;
   announcementTextColor: string;
   showTopBar: boolean;
+  showTopPhone: boolean;
+  showTopEmail: boolean;
+  showTopWhatsApp: boolean;
+  showTopLocation: boolean;
+  showTopLicense: boolean;
   topBarLocationText: string;
   topBarWhatsAppBadgeText: string;
   topBarLicenseText: string;
-  ctaButtonText: string;
+  showLogoTagline: boolean;
+  showNavHome: boolean;
+  showNavServices: boolean;
+  showNavIndustries: boolean;
+  showNavEmployers: boolean;
+  showNavJobseekers: boolean;
+  showNavBlog: boolean;
+  showNavLocations: boolean;
+  showNavAbout: boolean;
+  showNavContact: boolean;
+  showSecondaryCta: boolean;
   secondaryCtaText: string;
+  showPrimaryCta: boolean;
+  ctaButtonText: string;
+  showLanguageSelector: boolean;
 }
 
 export interface FooterConfig {
+  showCtaBanner: boolean;
+  ctaBannerBadge: string;
   ctaBannerHeading: string;
   ctaBannerSubtext: string;
   ctaButtonText: string;
   ctaWhatsAppText: string;
+  showAboutColumn: boolean;
+  aboutTitle: string;
   aboutText: string;
+  showSocialLinks: boolean;
+  showServicesColumn: boolean;
+  servicesTitle: string;
+  showIndustriesSublist: boolean;
+  industriesTitle: string;
+  showQuickLinksColumn: boolean;
+  quickLinksTitle: string;
+  showLicensingBox: boolean;
+  licensingBoxTitle: string;
+  licensingBoxText: string;
+  showCallbackColumn: boolean;
   callbackTitle: string;
   callbackSubtext: string;
   callbackPlaceholder: string;
   callbackResponseTime: string;
+  showOperatingHours: boolean;
+  operatingHoursTitle: string;
   operatingHours: string;
+  showCopyrightBar: boolean;
   copyrightText: string;
+  showFooterCertifications: boolean;
 }
 
 export interface HeroSlideConfig {
@@ -91,6 +128,18 @@ export interface ProcessStepConfig {
 }
 
 export interface HomePageConfig {
+  showHeroSlider: boolean;
+  showHeroQuickCards: boolean;
+  showTrustMetrics: boolean;
+  showServicesSection: boolean;
+  showCalculatorSection: boolean;
+  showIndustriesSection: boolean;
+  showGlobalSection: boolean;
+  showProcessSection: boolean;
+  showComplianceSection: boolean;
+  showTestimonialsSection: boolean;
+  showFaqSection: boolean;
+  showCtaBannerSection: boolean;
   heroSlides: HeroSlideConfig[];
   heroQuickCards: {
     badge: string;

@@ -33,10 +33,16 @@ import {
   ExternalLink,
   MessageSquare,
   Sparkles,
+  Layout,
 } from 'lucide-react';
 import { useSiteSettings, SiteSettings } from '../context/SiteSettingsContext';
 import { useImages, ImageItem } from '../context/ImageContext';
 import { PageId } from '../types';
+
+import { HeaderConfigTab } from './admin/HeaderConfigTab';
+import { FooterConfigTab } from './admin/FooterConfigTab';
+import { HomePageConfigTab } from './admin/HomePageConfigTab';
+import { BlogManagerTab } from './admin/BlogManagerTab';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -46,6 +52,10 @@ interface AdminPanelModalProps {
 type AdminTab =
   | 'overview'
   | 'settings'
+  | 'header'
+  | 'footer'
+  | 'homepage'
+  | 'blogs'
   | 'contact'
   | 'locations'
   | 'images'
@@ -464,6 +474,54 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
           >
             <Globe className="w-3.5 h-3.5 text-blue-700" />
             <span>Branding & Logo</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('homepage')}
+            className={`px-4 py-2.5 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'homepage'
+                ? 'bg-white text-[#002255] border-t-2 border-[#002255] shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Sliders className="w-3.5 h-3.5 text-blue-700" />
+            <span>Home Page Sections</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('header')}
+            className={`px-4 py-2.5 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'header'
+                ? 'bg-white text-[#002255] border-t-2 border-[#002255] shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Layout className="w-3.5 h-3.5 text-blue-700" />
+            <span>Header Customizer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('footer')}
+            className={`px-4 py-2.5 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'footer'
+                ? 'bg-white text-[#002255] border-t-2 border-[#002255] shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Layout className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Footer Customizer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('blogs')}
+            className={`px-4 py-2.5 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'blogs'
+                ? 'bg-white text-[#002255] border-t-2 border-[#002255] shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5 text-amber-600" />
+            <span>Blog Articles CMS</span>
           </button>
 
           <button

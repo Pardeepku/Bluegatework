@@ -151,41 +151,51 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
             {/* Left info items */}
             <div className="flex items-center flex-wrap gap-4 sm:gap-6">
-              <a
-                href={`tel:${cleanPhone}`}
-                className="flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors font-medium"
-              >
-                <Phone className="w-3.5 h-3.5 text-blue-400" />
-                <span>{settings.phoneMain}</span>
-              </a>
-              <a
-                href={`mailto:${settings.emailGeneral}`}
-                className="hidden sm:flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors"
-              >
-                <Mail className="w-3.5 h-3.5 text-blue-400" />
-                <span>{settings.emailGeneral}</span>
-              </a>
-              <a
-                href={waUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden md:flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors font-semibold"
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>{headerCfg.topBarWhatsAppBadgeText || '24/7 WhatsApp Dispatch'}</span>
-              </a>
-              <div className="hidden lg:flex items-center gap-1.5 text-slate-400">
-                <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>{headerCfg.topBarLocationText || `${settings.addressHQ.city}, ${settings.addressHQ.country} • Amsterdam, ${settings.addressNetherlands.country}`}</span>
-              </div>
+              {headerCfg.showTopPhone !== false && (
+                <a
+                  href={`tel:${cleanPhone}`}
+                  className="flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors font-medium"
+                >
+                  <Phone className="w-3.5 h-3.5 text-blue-400" />
+                  <span>{settings.phoneMain}</span>
+                </a>
+              )}
+              {headerCfg.showTopEmail !== false && (
+                <a
+                  href={`mailto:${settings.emailGeneral}`}
+                  className="hidden sm:flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5 text-blue-400" />
+                  <span>{settings.emailGeneral}</span>
+                </a>
+              )}
+              {headerCfg.showTopWhatsApp !== false && (
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden md:flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors font-semibold"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>{headerCfg.topBarWhatsAppBadgeText || '24/7 WhatsApp Dispatch'}</span>
+                </a>
+              )}
+              {headerCfg.showTopLocation !== false && (
+                <div className="hidden lg:flex items-center gap-1.5 text-slate-400">
+                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>{headerCfg.topBarLocationText || `${settings.addressHQ.city}, ${settings.addressHQ.country} • Amsterdam, ${settings.addressNetherlands.country}`}</span>
+                </div>
+              )}
             </div>
 
             {/* Right info items + Admin Login/Profile Controls */}
             <div className="flex items-center gap-3 sm:gap-4 ml-auto">
-              <div className="hidden xl:flex items-center gap-1 text-[11px] text-blue-300 font-medium bg-blue-900/40 px-2 py-0.5 rounded border border-blue-800">
-                <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                <span>{headerCfg.topBarLicenseText || 'ACT Certified & Compliant European ETT Provider'}</span>
-              </div>
+              {headerCfg.showTopLicense !== false && (
+                <div className="hidden xl:flex items-center gap-1 text-[11px] text-blue-300 font-medium bg-blue-900/40 px-2 py-0.5 rounded border border-blue-800">
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                  <span>{headerCfg.topBarLicenseText || 'ACT Certified & Compliant European ETT Provider'}</span>
+                </div>
+              )}
 
               {/* Admin Area in Top-Right Corner */}
               {!isAdminAuthenticated ? (
@@ -225,10 +235,12 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               )}
 
-              <LanguageSelector
-                currentLang={currentLang}
-                onLanguageChange={onLanguageChange}
-              />
+              {headerCfg.showLanguageSelector !== false && (
+                <LanguageSelector
+                  currentLang={currentLang}
+                  onLanguageChange={onLanguageChange}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -238,250 +250,272 @@ export const Header: React.FC<HeaderProps> = ({
       <nav
         className={`w-full bg-white transition-all duration-300 ${
           isScrolled
-            ? 'shadow-md shadow-blue-950/5 py-3 border-b border-blue-100'
-            : 'py-4 border-b border-blue-100'
+            ? 'shadow-md shadow-blue-950/5 py-2.5 sm:py-3 border-b border-blue-100'
+            : 'py-3.5 sm:py-4 border-b border-blue-100'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           {/* Company Logo */}
-          <div onClick={() => handleNavClick('home')} className="cursor-pointer">
-            <Logo size="md" showTagline={true} />
+          <div onClick={() => handleNavClick('home')} className="cursor-pointer shrink-0">
+            <Logo size="md" showTagline={headerCfg.showLogoTagline !== false} />
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2 text-[14px] font-medium text-[#002366]">
+          {/* Desktop Navigation Links - Symmetrically Aligned with Uniform Baseline & Heights */}
+          <div className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1.5 text-[13px] xl:text-[14px] font-medium text-[#002366]">
             {/* Home */}
-            <button
-              id="nav-home-btn"
-              onClick={() => handleNavClick('home')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
-                currentPage === 'home' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              Home
-            </button>
+            {headerCfg.showNavHome !== false && (
+              <button
+                id="nav-home-btn"
+                onClick={() => handleNavClick('home')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'home' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+                }`}
+              >
+                Home
+              </button>
+            )}
 
             {/* Services Dropdown */}
-            <div className="relative" ref={servicesRef}>
-              <button
-                id="nav-services-dropdown-btn"
-                onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
-                className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 cursor-pointer ${
-                  currentPage === 'services' ||
-                  currentPage === 'temporary-staffing' ||
-                  currentPage === 'outsourcing' ||
-                  currentPage === 'international-recruitment'
-                    ? 'text-[#002366] bg-blue-50 font-bold'
-                    : ''
-                }`}
-              >
-                <span>Services</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    servicesDropdownOpen ? 'rotate-180 text-[#0056b3]' : 'opacity-70'
+            {headerCfg.showNavServices !== false && (
+              <div className="relative" ref={servicesRef}>
+                <button
+                  id="nav-services-dropdown-btn"
+                  onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+                  className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center gap-1 hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                    currentPage === 'services' ||
+                    currentPage === 'temporary-staffing' ||
+                    currentPage === 'outsourcing' ||
+                    currentPage === 'international-recruitment'
+                      ? 'text-[#002366] bg-blue-50 font-bold'
+                      : ''
                   }`}
-                />
-              </button>
+                >
+                  <span>Services</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                      servicesDropdownOpen ? 'rotate-180 text-[#0056b3]' : 'opacity-70'
+                    }`}
+                  />
+                </button>
 
-              {servicesDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-96 rounded-2xl bg-white shadow-2xl shadow-blue-950/15 border border-slate-100 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1.5">
-                    European Workforce Capabilities
-                  </div>
-                  <div className="space-y-1 mt-1">
-                    {CORE_SERVICES.map((service) => (
-                      <button
-                        key={service.id}
-                        id={`dropdown-service-${service.id}`}
-                        onClick={() => handleNavClick(service.pageId)}
-                        className={`w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer ${
-                          currentPage === service.pageId ? 'bg-blue-50' : ''
-                        }`}
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#002366] flex items-center justify-center shrink-0 group-hover:bg-[#002366] group-hover:text-white transition-colors">
-                          <Briefcase className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-[#0056b3]">
-                              {service.title}
-                            </span>
-                            <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                              {service.badge}
-                            </span>
+                {servicesDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-96 rounded-2xl bg-white shadow-2xl shadow-blue-950/15 border border-slate-100 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1.5">
+                      European Workforce Capabilities
+                    </div>
+                    <div className="space-y-1 mt-1">
+                      {CORE_SERVICES.map((service) => (
+                        <button
+                          key={service.id}
+                          id={`dropdown-service-${service.id}`}
+                          onClick={() => handleNavClick(service.pageId)}
+                          className={`w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer ${
+                            currentPage === service.pageId ? 'bg-blue-50' : ''
+                          }`}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#002366] flex items-center justify-center shrink-0 group-hover:bg-[#002366] group-hover:text-white transition-colors">
+                            <Briefcase className="w-4 h-4" />
                           </div>
-                          <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                            {service.shortDescription}
-                          </p>
-                        </div>
-                      </button>
-                    ))}
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-[#0056b3]">
+                                {service.title}
+                              </span>
+                              <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                {service.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                              {service.shortDescription}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
 
-                    <div className="pt-2 border-t border-slate-100 mt-2 flex justify-between items-center px-2">
-                      <button
-                        id="dropdown-all-services-btn"
-                        onClick={() => handleNavClick('services')}
-                        className="text-xs font-bold text-[#0056b3] hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>View All Solutions</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                      <span className="text-[11px] text-slate-400">Rapid 48-72h Deployment</span>
+                      <div className="pt-2 border-t border-slate-100 mt-2 flex justify-between items-center px-2">
+                        <button
+                          id="dropdown-all-services-btn"
+                          onClick={() => handleNavClick('services')}
+                          className="text-xs font-bold text-[#0056b3] hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>View All Solutions</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
+                        <span className="text-[11px] text-slate-400">Rapid 48-72h Deployment</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* Industries */}
-            <button
-              id="nav-industries-btn"
-              onClick={() => handleNavClick('industries')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
-                currentPage === 'industries' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              Industries
-            </button>
-
-            {/* For Employers Dropdown */}
-            <div className="relative" ref={employersRef}>
+            {headerCfg.showNavIndustries !== false && (
               <button
-                id="nav-employers-dropdown-btn"
-                onClick={() => setEmployersDropdownOpen(!employersDropdownOpen)}
-                className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 cursor-pointer ${
-                  currentPage === 'for-employers' || currentPage === 'compliance'
-                    ? 'text-[#002366] bg-blue-50 font-bold'
-                    : ''
+                id="nav-industries-btn"
+                onClick={() => handleNavClick('industries')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'industries' ? 'text-[#002366] bg-blue-50 font-bold' : ''
                 }`}
               >
-                <span>For Employers</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    employersDropdownOpen ? 'rotate-180 text-[#0056b3]' : 'opacity-70'
-                  }`}
-                />
+                Industries
               </button>
+            )}
 
-              {employersDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-80 rounded-2xl bg-white shadow-2xl shadow-blue-950/15 border border-slate-100 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="space-y-1">
-                    <button
-                      id="dropdown-hire-talent-btn"
-                      onClick={() => handleNavClick('for-employers')}
-                      className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#002366] flex items-center justify-center shrink-0">
-                        <Users className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-[#0056b3] block">
-                          Hire European Talent
-                        </span>
-                        <span className="text-xs text-slate-500">
-                          B2B Staffing, SLA metrics & pricing model
-                        </span>
-                      </div>
-                    </button>
+            {/* For Employers Dropdown */}
+            {headerCfg.showNavEmployers !== false && (
+              <div className="relative" ref={employersRef}>
+                <button
+                  id="nav-employers-dropdown-btn"
+                  onClick={() => setEmployersDropdownOpen(!employersDropdownOpen)}
+                  className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center gap-1 hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                    currentPage === 'for-employers' || currentPage === 'compliance'
+                      ? 'text-[#002366] bg-blue-50 font-bold'
+                      : ''
+                  }`}
+                >
+                  <span>For Employers</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                      employersDropdownOpen ? 'rotate-180 text-[#0056b3]' : 'opacity-70'
+                    }`}
+                  />
+                </button>
 
-                    <button
-                      id="dropdown-compliance-btn"
-                      onClick={() => handleNavClick('compliance')}
-                      className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-                        <ShieldCheck className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-[#0056b3] block">
-                          Compliance & Legal Framework
-                        </span>
-                        <span className="text-xs text-slate-500">
-                          ACT license, NEN 4400-1 & A1 portable certs
-                        </span>
-                      </div>
-                    </button>
+                {employersDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-80 rounded-2xl bg-white shadow-2xl shadow-blue-950/15 border border-slate-100 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="space-y-1">
+                      <button
+                        id="dropdown-hire-talent-btn"
+                        onClick={() => handleNavClick('for-employers')}
+                        className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#002366] flex items-center justify-center shrink-0">
+                          <Users className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-[#0056b3] block">
+                            Hire European Talent
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            B2B Staffing, SLA metrics & pricing model
+                          </span>
+                        </div>
+                      </button>
+
+                      <button
+                        id="dropdown-compliance-btn"
+                        onClick={() => handleNavClick('compliance')}
+                        className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                          <ShieldCheck className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-[#0056b3] block">
+                            Compliance & Legal Framework
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            ACT license, NEN 4400-1 & A1 portable certs
+                          </span>
+                        </div>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* For Jobseekers */}
-            <button
-              id="nav-jobseekers-btn"
-              onClick={() => handleNavClick('for-jobseekers')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
-                currentPage === 'for-jobseekers' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              For Job Seekers
-            </button>
+            {headerCfg.showNavJobseekers !== false && (
+              <button
+                id="nav-jobseekers-btn"
+                onClick={() => handleNavClick('for-jobseekers')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'for-jobseekers' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+                }`}
+              >
+                For Job Seekers
+              </button>
+            )}
 
             {/* Blog Navigation Link */}
-            <button
-              id="nav-blog-btn"
-              onClick={() => handleNavClick('blog')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 cursor-pointer ${
-                currentPage === 'blog' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Blog & Insights</span>
-            </button>
+            {headerCfg.showNavBlog !== false && (
+              <button
+                id="nav-blog-btn"
+                onClick={() => handleNavClick('blog')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center gap-1.5 hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'blog' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <span>Blog & Insights</span>
+              </button>
+            )}
 
             {/* Locations */}
-            <button
-              id="nav-locations-btn"
-              onClick={() => handleNavClick('locations')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
-                currentPage === 'locations' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              Locations
-            </button>
+            {headerCfg.showNavLocations !== false && (
+              <button
+                id="nav-locations-btn"
+                onClick={() => handleNavClick('locations')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'locations' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+                }`}
+              >
+                Locations
+              </button>
+            )}
 
             {/* About */}
-            <button
-              id="nav-about-btn"
-              onClick={() => handleNavClick('about')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
-                currentPage === 'about' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              About
-            </button>
+            {headerCfg.showNavAbout !== false && (
+              <button
+                id="nav-about-btn"
+                onClick={() => handleNavClick('about')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'about' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+                }`}
+              >
+                About
+              </button>
+            )}
 
             {/* Contact */}
-            <button
-              id="nav-contact-btn"
-              onClick={() => handleNavClick('contact')}
-              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
-                currentPage === 'contact' ? 'text-[#002366] bg-blue-50 font-bold' : ''
-              }`}
-            >
-              Contact
-            </button>
+            {headerCfg.showNavContact !== false && (
+              <button
+                id="nav-contact-btn"
+                onClick={() => handleNavClick('contact')}
+                className={`h-9 px-2.5 xl:px-3 rounded-lg transition-colors inline-flex items-center justify-center hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'contact' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+                }`}
+              >
+                Contact
+              </button>
+            )}
           </div>
 
           {/* Action CTAs (Dual B2B & Candidate paths) */}
-          <div className="hidden sm:flex items-center gap-3">
-            <button
-              id="header-find-jobs-btn"
-              onClick={() => handleNavClick('for-jobseekers')}
-              className="px-4 py-2.5 text-xs font-bold text-[#002366] hover:bg-blue-50 rounded-xl transition-all border border-blue-100 cursor-pointer"
-            >
-              {headerCfg.secondaryCtaText || 'Browse Jobs'}
-            </button>
+          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+            {headerCfg.showSecondaryCta !== false && (
+              <button
+                id="header-find-jobs-btn"
+                onClick={() => handleNavClick('for-jobseekers')}
+                className="h-10 px-3.5 xl:px-4 text-xs font-bold text-[#002366] hover:bg-blue-50 rounded-xl transition-all border border-blue-200 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
+              >
+                {headerCfg.secondaryCtaText || 'Browse Jobs'}
+              </button>
+            )}
 
-            <button
-              id="header-request-quote-btn"
-              onClick={onRequestQuote}
-              className="px-5 py-2.5 rounded-full bg-[#002366] text-white font-semibold text-xs shadow-lg shadow-blue-900/20 hover:bg-[#001a4d] transition-all flex items-center gap-2 hover:scale-[1.02] cursor-pointer"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
-              <span>{headerCfg.ctaButtonText || 'Request Talent'}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-blue-200" />
-            </button>
+            {headerCfg.showPrimaryCta !== false && (
+              <button
+                id="header-request-quote-btn"
+                onClick={onRequestQuote}
+                className="h-10 px-4 xl:px-5 rounded-full bg-[#002366] text-white font-semibold text-xs shadow-md shadow-blue-900/20 hover:bg-[#001a4d] transition-all flex items-center justify-center gap-2 hover:scale-[1.02] cursor-pointer whitespace-nowrap"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
+                <span>{headerCfg.ctaButtonText || 'Request Talent'}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-blue-200" />
+              </button>
+            )}
           </div>
 
           {/* Mobile menu trigger */}

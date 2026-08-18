@@ -25,8 +25,52 @@ import { ForJobseekersPage } from './pages/ForJobseekersPage';
 import { LocationsPage } from './pages/LocationsPage';
 import { ContactPage } from './pages/ContactPage';
 
+function getInitialRoute(): { page: PageId; blogSlug?: string } {
+  if (typeof window === 'undefined') return { page: 'home' };
+  const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
+  if (!pathname) return { page: 'home' };
+
+  if (pathname.startsWith('blog/')) {
+    const slug = pathname.replace('blog/', '');
+    return { page: 'blog', blogSlug: slug };
+  }
+
+  const validPages: PageId[] = [
+    'home',
+    'about',
+    'services',
+    'temporary-staffing',
+    'outsourcing',
+    'international-recruitment',
+    'industries',
+    'for-employers',
+    'for-jobseekers',
+    'locations',
+    'contact',
+    'compliance',
+    'blog',
+  ];
+
+  if (validPages.includes(pathname as PageId)) {
+    return { page: pathname as PageId };
+  }
+
+  return { page: 'home' };
+}
+
+function getPathForPage(page: PageId, blogSlug?: string): string {
+  if (page === 'home') return '/';
+  if (page === 'blog' && blogSlug) return `/blog/${blogSlug}`;
+  return `/${page}`;
+}
+
+import { BlogPage } from './pages/BlogPage';
+import { BlogPostPage } from './pages/BlogPostPage';
+
 function AppContent() {
-  const [currentPage, setCurrentPage] = useState<PageId>('home');
+  const initialRoute = getInitialRoute();
+  const [currentPage, setCurrentPage] = useState<PageId>(initialRoute.page);
+  const [currentBlogSlug, setCurrentBlogSlug] = useState<string | undefined>(initialRoute.blogSlug);
   const [currentLang, setCurrentLang] = useState<Language>('en');
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
@@ -43,10 +87,39 @@ function AppContent() {
 
   const { isAdminOpen, setIsAdminOpen } = useImages();
 
+  // Listen for browser Back/Forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = getInitialRoute();
+      setCurrentPage(route.page);
+      setCurrentBlogSlug(route.blogSlug);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // Dynamic Browser Title and Favicon Management based on Site Settings
   useEffect(() => {
-    // Update Document Title
-    document.title = `${settings.siteName} | ${settings.tagline}`;
+    // Update Document Title based on current page
+    const pageTitleMap: Record<PageId, string> = {
+      home: `${settings.siteName} | ${settings.tagline}`,
+      about: `About Us | ${settings.siteName}`,
+      services: `Workforce Services & Staffing | ${settings.siteName}`,
+      'temporary-staffing': `Temporary Staffing Solutions | ${settings.siteName}`,
+      outsourcing: `Workforce Outsourcing & Operations | ${settings.siteName}`,
+      'international-recruitment': `International Recruitment & Relocation | ${settings.siteName}`,
+      industries: `Industries We Power | ${settings.siteName}`,
+      'for-employers': `For Employers & Request Staff | ${settings.siteName}`,
+      'for-jobseekers': `For Jobseekers & European Careers | ${settings.siteName}`,
+      locations: `Global Hubs & European Corridors | ${settings.siteName}`,
+      contact: `Contact Us & Locations | ${settings.siteName}`,
+      compliance: `Labor Compliance & Legal Standards | ${settings.siteName}`,
+      blog: `Blog, Legal & Staffing Insights | ${settings.siteName}`,
+    };
+
+    document.title = pageTitleMap[currentPage] || `${settings.siteName} | ${settings.tagline}`;
 
     // Update Favicon if custom favicon provided
     if (settings.faviconUrl) {
@@ -58,11 +131,17 @@ function AppContent() {
       }
       link.href = settings.faviconUrl;
     }
-  }, [settings.siteName, settings.tagline, settings.faviconUrl]);
+  }, [currentPage, settings.siteName, settings.tagline, settings.faviconUrl]);
 
-  // Scroll to top upon page navigation
-  const handleNavigate = (page: PageId) => {
+  // Navigate function that syncs URL in browser address bar
+  const handleNavigate = (page: PageId, blogSlug?: string) => {
     setCurrentPage(page);
+    setCurrentBlogSlug(blogSlug);
+
+    const newPath = getPathForPage(page, blogSlug);
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({ page, blogSlug }, '', newPath);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -173,6 +252,21 @@ function AppContent() {
             onRequestQuote={handleOpenQuoteModal}
           />
         )}
+
+        {currentPage === 'blog' && (
+          currentBlogSlug ? (
+            <BlogPostPage
+              blogSlug={currentBlogSlug}
+              onNavigate={handleNavigate}
+              onRequestQuote={handleOpenQuoteModal}
+            />
+          ) : (
+            <BlogPage
+              onNavigate={handleNavigate}
+              onRequestQuote={handleOpenQuoteModal}
+            />
+          )
+        )}
       </main>
 
       {/* Global Comprehensive Footer */}
@@ -183,33 +277,6 @@ function AppContent() {
 
       {/* Floating Interactive WhatsApp Widget */}
       <FloatingWhatsApp />
-
-      {/* Floating Quick Admin Pill */}
-      <div className="fixed bottom-6 left-6 z-40">
-        <button
-          id="floating-admin-control-btn"
-          onClick={handleOpenAdminTrigger}
-          className="group px-3.5 py-2 rounded-full bg-[#002255] text-white hover:bg-[#001738] shadow-xl border border-blue-400/30 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer text-xs font-bold"
-          title={isAdminAuthenticated ? "Open Admin Control Panel" : "Admin Login to manage website settings & images"}
-        >
-          <div className="w-5 h-5 rounded-full bg-[#FFD000] text-slate-950 flex items-center justify-center font-bold">
-            {isAdminAuthenticated ? (
-              <Sliders className="w-3 h-3 text-slate-950" />
-            ) : (
-              <Lock className="w-3 h-3 text-slate-950" />
-            )}
-          </div>
-          <span className="hidden sm:inline">
-            {isAdminAuthenticated ? 'Admin Panel' : 'Admin Login'}
-          </span>
-          <span className="sm:hidden">
-            {isAdminAuthenticated ? 'Admin' : 'Login'}
-          </span>
-          {isAdminAuthenticated && (
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          )}
-        </button>
-      </div>
 
       {/* Admin Authentication & Management Modals */}
       <AdminLoginModal

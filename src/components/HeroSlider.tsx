@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { PageId } from '../types';
 import { useImages } from '../context/ImageContext';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 interface HeroSliderProps {
   onNavigate: (page: PageId) => void;
@@ -29,46 +30,49 @@ interface SlideData {
   fallbackImageUrl: string;
 }
 
-const SLIDE_TEMPLATES: SlideData[] = [
-  {
-    id: 0,
-    imageKey: 'hero_slide_1',
-    eyebrow: 'EFFICIENT WORKFORCE. SMOOTH OPERATIONS.',
-    headline: 'Powering Your Business From Warehouse To Success',
-    description:
-      'Our dedicated warehouse workforce ensures accurate handling, timely operations, and complete efficiency to keep your supply chain running strong.',
-    buttonText: 'Contact us',
-    categoryName: 'Warehouse Workers',
-    fallbackImageUrl:
-      'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=2000&q=85',
-  },
-  {
-    id: 1,
-    imageKey: 'hero_slide_2',
-    eyebrow: 'BUILDING TOMORROW, TOGETHER',
-    headline: 'Building Strong Foundations For A Better Tomorrow',
-    description:
-      'Delivering reliable and innovative construction solutions across Europe with a focus on quality, safety, and sustainability.',
-    buttonText: 'Contact us',
-    categoryName: 'Construction Workers',
-    fallbackImageUrl:
-      'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?auto=format&fit=crop&w=2000&q=85',
-  },
-];
-
 export const HeroSlider: React.FC<HeroSliderProps> = ({
   onNavigate,
   onRequestQuote,
   onApplyJob,
 }) => {
   const { getImageUrl } = useImages();
+  const { settings } = useSiteSettings();
+  const hp = settings.homePageContent || {};
+
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
-  const slides = SLIDE_TEMPLATES.map((tmpl) => ({
+  const slides: SlideData[] = [
+    {
+      id: 0,
+      imageKey: 'hero_slide_1',
+      eyebrow: hp.slide1Eyebrow || 'EFFICIENT WORKFORCE. SMOOTH OPERATIONS.',
+      headline: hp.slide1Headline || 'Powering Your Business From Warehouse To Success',
+      description:
+        hp.slide1Description ||
+        'Our dedicated warehouse workforce ensures accurate handling, timely operations, and complete efficiency to keep your supply chain running strong.',
+      buttonText: hp.slide1ButtonText || 'Contact us',
+      categoryName: 'Warehouse Workers',
+      fallbackImageUrl:
+        'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=2000&q=85',
+    },
+    {
+      id: 1,
+      imageKey: 'hero_slide_2',
+      eyebrow: hp.slide2Eyebrow || 'BUILDING TOMORROW, TOGETHER',
+      headline: hp.slide2Headline || 'Building Strong Foundations For A Better Tomorrow',
+      description:
+        hp.slide2Description ||
+        'Delivering reliable and innovative construction solutions across Europe with a focus on quality, safety, and sustainability.',
+      buttonText: hp.slide2ButtonText || 'Contact us',
+      categoryName: 'Construction Workers',
+      fallbackImageUrl:
+        'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?auto=format&fit=crop&w=2000&q=85',
+    },
+  ].map((tmpl) => ({
     ...tmpl,
     imageUrl: getImageUrl(tmpl.imageKey, tmpl.fallbackImageUrl),
   }));
@@ -162,11 +166,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
           </div>
         ))}
 
-        {/* MAIN SLIDE CONTENT CONTAINER */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-20 lg:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* MAIN SLIDE CONTENT CONTAINER - FULL 100% WIDTH ON PC */}
+        <div className="relative z-10 w-full px-4 sm:px-8 lg:px-14 xl:px-20 py-16 sm:py-20 lg:py-28 max-w-none">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-center w-full">
             {/* Left Content Area matching both reference layouts */}
-            <div className="lg:col-span-8 space-y-6 text-left">
+            <div className="lg:col-span-8 xl:col-span-8 space-y-6 text-left max-w-4xl">
               {/* Eyebrow in Gold */}
               <div className="flex items-center gap-2">
                 <p className="text-[#FFD000] text-xs sm:text-sm font-extrabold tracking-[0.2em] uppercase font-sans">
@@ -175,7 +179,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-heading tracking-tight leading-[1.12] max-w-2xl drop-shadow-sm">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-heading tracking-tight leading-[1.12] max-w-3xl drop-shadow-sm">
                 {activeSlideData.headline}
               </h1>
 
@@ -183,7 +187,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
               <div className="w-20 h-[2px] bg-white/40 rounded-full" />
 
               {/* Description Body Text */}
-              <p className="text-sm sm:text-base lg:text-lg text-slate-100/90 max-w-xl leading-relaxed font-normal">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-100/90 max-w-2xl leading-relaxed font-normal">
                 {activeSlideData.description}
               </p>
 
@@ -210,7 +214,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
             </div>
 
             {/* Right Column: Floating Sector Switcher Widget */}
-            <div className="lg:col-span-4 flex justify-start lg:justify-end self-end pt-6 lg:pt-0">
+            <div className="lg:col-span-4 xl:col-span-4 flex justify-start lg:justify-end self-end pt-6 lg:pt-0">
               <div className="w-full max-w-xs bg-[#1f242d]/85 backdrop-blur-md border border-white/15 rounded-md p-4 text-white shadow-2xl space-y-3">
                 <p className="text-[10px] uppercase font-extrabold tracking-widest text-[#FFD000]">
                   Industry Specializations
@@ -259,7 +263,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
         {/* BOTTOM NAVIGATION STRIP (DOTS, LIVE PROGRESS BAR, PAUSE STATUS, ARROWS) */}
         <div className="absolute bottom-4 sm:bottom-6 inset-x-0 z-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="w-full px-4 sm:px-8 lg:px-14 xl:px-20 flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Navigation Dots Indicator */}
             <div
               className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10"
