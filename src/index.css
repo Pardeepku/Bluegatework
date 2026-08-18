@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #002366;
+    background-color: #f8fbff;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f7ff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bfdbfe;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #93c5fd;
+}
+
+/* Professional Polish theme gradients & utilities */
+.bg-gradient-royal {
+  background: linear-gradient(135deg, #001a4d 0%, #002366 50%, #0056b3 100%);
+}
+
+.bg-gradient-royal-subtle {
+  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+}
+
+.border-gold-hover:hover {
+  border-color: #D4AF37 !important;
+}
+
+.bg-gold-accent {
+  background-color: #D4AF37;
+}
+
+.text-gold-accent {
+  color: #D4AF37;
+}
+

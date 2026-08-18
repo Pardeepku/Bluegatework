@@ -1,0 +1,8 @@
+{
+  "name": "Bluegate Work - Global Workforce & Staffing Solutions",
+  "description": "Premium workforce provider in Portugal, Netherlands, and Europe offering temporary staffing, outsourcing, and international recruitment services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
