@@ -10,10 +10,157 @@ export type PageId =
   | 'for-jobseekers'
   | 'locations'
   | 'contact'
-  | 'compliance';
+  | 'compliance'
+  | 'blog';
 
 export type LanguageCode = 'en' | 'pt' | 'nl' | 'es';
 export type Language = LanguageCode;
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  author: {
+    name: string;
+    role: string;
+    avatarUrl?: string;
+  };
+  coverImageUrl: string;
+  publishedDate: string;
+  readTimeMinutes: number;
+  tags: string[];
+  isFeatured?: boolean;
+  isPublished: boolean;
+}
+
+export interface HeaderConfig {
+  announcementText: string;
+  announcementLinkText: string;
+  announcementLinkPage: PageId;
+  announcementEnabled: boolean;
+  announcementBgColor: string;
+  announcementTextColor: string;
+  showTopBar: boolean;
+  topBarLocationText: string;
+  topBarWhatsAppBadgeText: string;
+  topBarLicenseText: string;
+  ctaButtonText: string;
+  secondaryCtaText: string;
+}
+
+export interface FooterConfig {
+  ctaBannerHeading: string;
+  ctaBannerSubtext: string;
+  ctaButtonText: string;
+  ctaWhatsAppText: string;
+  aboutText: string;
+  callbackTitle: string;
+  callbackSubtext: string;
+  callbackPlaceholder: string;
+  callbackResponseTime: string;
+  operatingHours: string;
+  copyrightText: string;
+}
+
+export interface HeroSlideConfig {
+  id: string;
+  category: string;
+  eyebrow: string;
+  headline: string;
+  highlightText: string;
+  description: string;
+  buttonText: string;
+  secondaryButtonText: string;
+  imageKey: string;
+}
+
+export interface TrustMetricConfig {
+  id: string;
+  value: string;
+  label: string;
+  subtext: string;
+}
+
+export interface ProcessStepConfig {
+  step: string;
+  title: string;
+  desc: string;
+}
+
+export interface HomePageConfig {
+  heroSlides: HeroSlideConfig[];
+  heroQuickCards: {
+    badge: string;
+    title: string;
+    desc: string;
+    pageId: PageId;
+  }[];
+  trustMetrics: TrustMetricConfig[];
+  servicesSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+  };
+  calculatorSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+  };
+  industriesSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    ctaText: string;
+  };
+  globalSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    hubsTitle: string;
+  };
+  processSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    steps: ProcessStepConfig[];
+  };
+  complianceSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    card1Title: string;
+    card1Desc: string;
+    card2Title: string;
+    card2Desc: string;
+    card3Title: string;
+    card3Desc: string;
+    card4Title: string;
+    card4Desc: string;
+  };
+  testimonialsSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+  };
+  faqSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    items: {
+      question: string;
+      answer: string;
+    }[];
+  };
+  ctaBannerSection: {
+    title: string;
+    subtitle: string;
+    buttonText: string;
+    secondaryButtonText: string;
+  };
+}
 
 export interface ServiceItem {
   id: string;

@@ -20,7 +20,8 @@ import {
   LogOut,
   User,
   Settings,
-  Bell
+  Bell,
+  BookOpen
 } from 'lucide-react';
 import { PageId, LanguageCode } from '../types';
 import { CORE_SERVICES } from '../data/mockData';
@@ -30,7 +31,7 @@ import { useSiteSettings } from '../context/SiteSettingsContext';
 
 interface HeaderProps {
   currentPage: PageId;
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, blogSlug?: string) => void;
   onRequestQuote: () => void;
   currentLang: LanguageCode;
   onLanguageChange: (lang: LanguageCode) => void;
@@ -51,6 +52,21 @@ export const Header: React.FC<HeaderProps> = ({
     setIsAdminPanelOpen,
     logout
   } = useSiteSettings();
+
+  const headerCfg = settings.headerConfig || {
+    showTopBar: true,
+    topBarLocationText: 'Portugal & Netherlands Operations | Global Recruitment Hubs',
+    topBarWhatsAppBadgeText: '24/7 WhatsApp Dispatch',
+    topBarLicenseText: 'ACT Certified & Compliant European ETT Provider',
+    ctaButtonText: 'Request Talent',
+    secondaryCtaText: 'Browse Jobs',
+    announcementEnabled: true,
+    announcementText: '🚀 High-Demand Seasonal Logistics & Warehouse Staffing Available for Q3/Q4 across Portugal & Netherlands',
+    announcementBgColor: '#002255',
+    announcementTextColor: '#FFD000',
+    announcementLinkText: 'Request Workforce',
+    announcementLinkPage: 'temporary-staffing' as PageId,
+  };
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -80,8 +96,8 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleNavClick = (page: PageId) => {
-    onNavigate(page);
+  const handleNavClick = (page: PageId, slug?: string) => {
+    onNavigate(page, slug);
     setMobileMenuOpen(false);
     setServicesDropdownOpen(false);
     setEmployersDropdownOpen(false);
@@ -92,14 +108,21 @@ export const Header: React.FC<HeaderProps> = ({
   const cleanWA = settings.whatsappNumber.replace(/[^\d]/g, '');
   const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(settings.whatsappPrefill)}`;
 
+  const isAnnouncementActive = headerCfg.announcementEnabled ?? settings.announcementBanner?.enabled;
+  const announcementText = headerCfg.announcementText || settings.announcementBanner?.text;
+  const announcementBgColor = headerCfg.announcementBgColor || settings.announcementBanner?.bgColor || '#002255';
+  const announcementTextColor = headerCfg.announcementTextColor || settings.announcementBanner?.textColor || '#FFD000';
+  const announcementLinkText = headerCfg.announcementLinkText || settings.announcementBanner?.linkText;
+  const announcementLinkPage = (headerCfg.announcementLinkPage || settings.announcementBanner?.linkPage || 'temporary-staffing') as PageId;
+
   return (
     <header className="sticky top-0 z-40 w-full transition-all duration-300">
       {/* Optional Top Announcement Bar */}
-      {settings.announcementBanner.enabled && (
+      {isAnnouncementActive && announcementText && (
         <div
           className="py-1.5 px-4 text-xs font-semibold flex items-center justify-between gap-3 text-center border-b border-white/10"
           style={{
-            backgroundColor: settings.announcementBanner.bgColor || '#002255',
+            backgroundColor: announcementBgColor,
             color: '#FFFFFF',
           }}
         >
@@ -107,14 +130,14 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-white/20 text-[#FFD000]">
               Announcement
             </span>
-            <span className="text-white text-xs">{settings.announcementBanner.text}</span>
-            {settings.announcementBanner.linkText && (
+            <span className="text-white text-xs">{announcementText}</span>
+            {announcementLinkText && (
               <button
-                onClick={() => handleNavClick(settings.announcementBanner.linkPage || 'temporary-staffing')}
+                onClick={() => handleNavClick(announcementLinkPage)}
                 className="inline-flex items-center gap-1 font-bold underline hover:opacity-80 transition-opacity ml-1 cursor-pointer"
-                style={{ color: settings.announcementBanner.textColor || '#FFD000' }}
+                style={{ color: announcementTextColor }}
               >
-                <span>{settings.announcementBanner.linkText}</span>
+                <span>{announcementLinkText}</span>
                 <ArrowRight className="w-3 h-3" />
               </button>
             )}
@@ -123,96 +146,93 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* Top Bar - High Level Contact, Admin & Credibility Info */}
-      <div className="bg-[#001a4d] text-slate-300 text-xs py-2 px-4 border-b border-blue-900/50">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          {/* Left info items */}
-          <div className="flex items-center flex-wrap gap-4 sm:gap-6">
-            <a
-              href={`tel:${cleanPhone}`}
-              className="flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors font-medium"
-            >
-              <Phone className="w-3.5 h-3.5 text-blue-400" />
-              <span>{settings.phoneMain}</span>
-            </a>
-            <a
-              href={`mailto:${settings.emailGeneral}`}
-              className="hidden sm:flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors"
-            >
-              <Mail className="w-3.5 h-3.5 text-blue-400" />
-              <span>{settings.emailGeneral}</span>
-            </a>
-            <div className="hidden lg:flex items-center gap-1.5 text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-[#D4AF37]"></span>
-              <span>
-                {settings.addressHQ.city} ({settings.addressHQ.country}) &bull; Netherlands &bull; Global Corridors
-              </span>
-            </div>
-          </div>
-
-          {/* Right info items - INCLUDING TOP RIGHT ADMIN LOGIN / LOGOUT */}
-          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-700/50 hover:bg-emerald-900 transition-colors text-[11px] font-semibold"
-            >
-              <MessageSquare className="w-3 h-3 text-emerald-400" />
-              <span>WhatsApp Direct</span>
-            </a>
-
-            <div className="h-3 w-px bg-blue-800 hidden sm:block" />
-
-            <div className="hidden md:flex items-center gap-1.5 text-[11px] text-[#D4AF37] font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>{settings.actLicense}</span>
-            </div>
-
-            <div className="h-3 w-px bg-blue-800 hidden sm:block" />
-
-            {/* TOP RIGHT ADMIN LOGIN / LOGOUT CONTROLS */}
-            {!isAdminAuthenticated ? (
-              <button
-                id="top-right-admin-login-btn"
-                onClick={() => setIsLoginModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-900/80 hover:bg-blue-800 text-blue-100 hover:text-white border border-blue-700/60 transition-all text-[11px] font-bold cursor-pointer shadow-xs"
-                title="Log in to Website Admin Panel"
+      {headerCfg.showTopBar !== false && (
+        <div className="bg-[#001a4d] text-slate-300 text-xs py-2 px-4 border-b border-blue-900/50">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            {/* Left info items */}
+            <div className="flex items-center flex-wrap gap-4 sm:gap-6">
+              <a
+                href={`tel:${cleanPhone}`}
+                className="flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors font-medium"
               >
-                <Lock className="w-3 h-3 text-[#FFD000]" />
-                <span>Admin Login</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-1.5">
-                <button
-                  id="top-right-admin-panel-btn"
-                  onClick={() => setIsAdminPanelOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFD000] hover:bg-[#ffe043] text-slate-950 transition-all text-[11px] font-extrabold cursor-pointer shadow-sm"
-                  title="Open Admin Control Center"
-                >
-                  <Sliders className="w-3 h-3 text-slate-950" />
-                  <span>Admin Panel</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-700 animate-pulse" />
-                </button>
-
-                <button
-                  id="top-right-admin-logout-btn"
-                  onClick={logout}
-                  className="flex items-center gap-1 px-2 py-1 rounded-full bg-rose-950/60 hover:bg-rose-900 text-rose-300 hover:text-white border border-rose-800/60 transition-all text-[11px] font-medium cursor-pointer"
-                  title={`Logout (${adminUser.username})`}
-                >
-                  <LogOut className="w-3 h-3" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
+                <Phone className="w-3.5 h-3.5 text-blue-400" />
+                <span>{settings.phoneMain}</span>
+              </a>
+              <a
+                href={`mailto:${settings.emailGeneral}`}
+                className="hidden sm:flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors"
+              >
+                <Mail className="w-3.5 h-3.5 text-blue-400" />
+                <span>{settings.emailGeneral}</span>
+              </a>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors font-semibold"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>{headerCfg.topBarWhatsAppBadgeText || '24/7 WhatsApp Dispatch'}</span>
+              </a>
+              <div className="hidden lg:flex items-center gap-1.5 text-slate-400">
+                <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>{headerCfg.topBarLocationText || `${settings.addressHQ.city}, ${settings.addressHQ.country} • Amsterdam, ${settings.addressNetherlands.country}`}</span>
               </div>
-            )}
+            </div>
 
-            <LanguageSelector
-              currentLang={currentLang}
-              onLanguageChange={onLanguageChange}
-            />
+            {/* Right info items + Admin Login/Profile Controls */}
+            <div className="flex items-center gap-3 sm:gap-4 ml-auto">
+              <div className="hidden xl:flex items-center gap-1 text-[11px] text-blue-300 font-medium bg-blue-900/40 px-2 py-0.5 rounded border border-blue-800">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>{headerCfg.topBarLicenseText || 'ACT Certified & Compliant European ETT Provider'}</span>
+              </div>
+
+              {/* Admin Area in Top-Right Corner */}
+              {!isAdminAuthenticated ? (
+                <button
+                  id="header-admin-login-btn"
+                  onClick={() => setIsLoginModalOpen(true)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-colors border border-white/15 cursor-pointer"
+                  title="Admin Sign In"
+                >
+                  <Lock className="w-3 h-3 text-[#FFD000]" />
+                  <span className="hidden sm:inline">Admin Login</span>
+                  <span className="sm:hidden">Login</span>
+                </button>
+              ) : (
+                <div className="flex items-center gap-1.5 bg-blue-950/80 px-2 py-0.5 rounded-lg border border-amber-400/40">
+                  <button
+                    id="header-admin-panel-btn"
+                    onClick={() => setIsAdminPanelOpen(true)}
+                    className="flex items-center gap-1.5 text-[11px] font-bold text-[#FFD000] hover:text-white transition-colors cursor-pointer px-1.5 py-0.5 rounded"
+                    title="Open Admin Control Panel"
+                  >
+                    <Sliders className="w-3 h-3" />
+                    <span>Admin Panel</span>
+                  </button>
+
+                  <span className="text-blue-700">|</span>
+
+                  <button
+                    id="header-admin-logout-btn"
+                    onClick={logout}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-rose-300 hover:text-rose-100 transition-colors cursor-pointer px-1.5 py-0.5 rounded hover:bg-rose-950/50"
+                    title="Sign Out of Admin"
+                  >
+                    <LogOut className="w-3 h-3" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </button>
+                </div>
+              )}
+
+              <LanguageSelector
+                currentLang={currentLang}
+                onLanguageChange={onLanguageChange}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Navigation Bar */}
       <nav
@@ -224,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Company Logo */}
-          <div onClick={() => handleNavClick('home')}>
+          <div onClick={() => handleNavClick('home')} className="cursor-pointer">
             <Logo size="md" showTagline={true} />
           </div>
 
@@ -234,7 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="nav-home-btn"
               onClick={() => handleNavClick('home')}
-              className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 ${
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
                 currentPage === 'home' ? 'text-[#002366] bg-blue-50 font-bold' : ''
               }`}
             >
@@ -246,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="nav-services-dropdown-btn"
                 onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
-                className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 ${
+                className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 cursor-pointer ${
                   currentPage === 'services' ||
                   currentPage === 'temporary-staffing' ||
                   currentPage === 'outsourcing' ||
@@ -274,7 +294,7 @@ export const Header: React.FC<HeaderProps> = ({
                         key={service.id}
                         id={`dropdown-service-${service.id}`}
                         onClick={() => handleNavClick(service.pageId)}
-                        className={`w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group ${
+                        className={`w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer ${
                           currentPage === service.pageId ? 'bg-blue-50' : ''
                         }`}
                       >
@@ -301,7 +321,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         id="dropdown-all-services-btn"
                         onClick={() => handleNavClick('services')}
-                        className="text-xs font-bold text-[#0056b3] hover:underline flex items-center gap-1"
+                        className="text-xs font-bold text-[#0056b3] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>View All Solutions</span>
                         <ArrowRight className="w-3 h-3" />
@@ -317,7 +337,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="nav-industries-btn"
               onClick={() => handleNavClick('industries')}
-              className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 ${
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
                 currentPage === 'industries' ? 'text-[#002366] bg-blue-50 font-bold' : ''
               }`}
             >
@@ -329,7 +349,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="nav-employers-dropdown-btn"
                 onClick={() => setEmployersDropdownOpen(!employersDropdownOpen)}
-                className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 ${
+                className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 cursor-pointer ${
                   currentPage === 'for-employers' || currentPage === 'compliance'
                     ? 'text-[#002366] bg-blue-50 font-bold'
                     : ''
@@ -349,7 +369,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <button
                       id="dropdown-hire-talent-btn"
                       onClick={() => handleNavClick('for-employers')}
-                      className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group"
+                      className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#002366] flex items-center justify-center shrink-0">
                         <Users className="w-4 h-4" />
@@ -367,7 +387,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <button
                       id="dropdown-compliance-btn"
                       onClick={() => handleNavClick('compliance')}
-                      className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group"
+                      className="w-full text-left p-3 rounded-xl hover:bg-blue-50 transition-colors flex items-start gap-3 group cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
                         <ShieldCheck className="w-4 h-4" />
@@ -390,18 +410,30 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="nav-jobseekers-btn"
               onClick={() => handleNavClick('for-jobseekers')}
-              className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 ${
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
                 currentPage === 'for-jobseekers' ? 'text-[#002366] bg-blue-50 font-bold' : ''
               }`}
             >
               For Job Seekers
             </button>
 
+            {/* Blog Navigation Link */}
+            <button
+              id="nav-blog-btn"
+              onClick={() => handleNavClick('blog')}
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 flex items-center gap-1.5 cursor-pointer ${
+                currentPage === 'blog' ? 'text-[#002366] bg-blue-50 font-bold' : ''
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Blog & Insights</span>
+            </button>
+
             {/* Locations */}
             <button
               id="nav-locations-btn"
               onClick={() => handleNavClick('locations')}
-              className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 ${
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
                 currentPage === 'locations' ? 'text-[#002366] bg-blue-50 font-bold' : ''
               }`}
             >
@@ -412,7 +444,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="nav-about-btn"
               onClick={() => handleNavClick('about')}
-              className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 ${
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
                 currentPage === 'about' ? 'text-[#002366] bg-blue-50 font-bold' : ''
               }`}
             >
@@ -423,7 +455,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="nav-contact-btn"
               onClick={() => handleNavClick('contact')}
-              className={`px-3.5 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 ${
+              className={`px-3 py-2 rounded-xl transition-colors hover:text-[#0056b3] hover:bg-blue-50/80 cursor-pointer ${
                 currentPage === 'contact' ? 'text-[#002366] bg-blue-50 font-bold' : ''
               }`}
             >
@@ -438,7 +470,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => handleNavClick('for-jobseekers')}
               className="px-4 py-2.5 text-xs font-bold text-[#002366] hover:bg-blue-50 rounded-xl transition-all border border-blue-100 cursor-pointer"
             >
-              Browse Jobs
+              {headerCfg.secondaryCtaText || 'Browse Jobs'}
             </button>
 
             <button
@@ -447,7 +479,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="px-5 py-2.5 rounded-full bg-[#002366] text-white font-semibold text-xs shadow-lg shadow-blue-900/20 hover:bg-[#001a4d] transition-all flex items-center gap-2 hover:scale-[1.02] cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
-              <span>Request Talent</span>
+              <span>{headerCfg.ctaButtonText || 'Request Talent'}</span>
               <ArrowRight className="w-3.5 h-3.5 text-blue-200" />
             </button>
           </div>
@@ -481,7 +513,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="mobile-nav-home"
                 onClick={() => handleNavClick('home')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'home' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -498,7 +530,7 @@ export const Header: React.FC<HeaderProps> = ({
                       key={s.id}
                       id={`mobile-nav-${s.id}`}
                       onClick={() => handleNavClick(s.pageId)}
-                      className={`w-full text-left px-2.5 py-2 text-sm rounded-lg hover:bg-white flex items-center justify-between ${
+                      className={`w-full text-left px-2.5 py-2 text-sm rounded-lg hover:bg-white flex items-center justify-between cursor-pointer ${
                         currentPage === s.pageId ? 'bg-white font-bold text-[#1E40AF] shadow-sm' : 'text-slate-700'
                       }`}
                     >
@@ -511,7 +543,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     id="mobile-nav-services-overview"
                     onClick={() => handleNavClick('services')}
-                    className="w-full text-left px-2.5 py-1.5 text-xs text-[#2563EB] font-bold hover:underline"
+                    className="w-full text-left px-2.5 py-1.5 text-xs text-[#2563EB] font-bold hover:underline cursor-pointer"
                   >
                     View All Services Overview →
                   </button>
@@ -521,7 +553,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="mobile-nav-industries"
                 onClick={() => handleNavClick('industries')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'industries' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -532,7 +564,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="mobile-nav-employers"
                 onClick={() => handleNavClick('for-employers')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'for-employers' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -546,7 +578,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="mobile-nav-jobseekers"
                 onClick={() => handleNavClick('for-jobseekers')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'for-jobseekers' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -557,10 +589,25 @@ export const Header: React.FC<HeaderProps> = ({
                 <ArrowRight className="w-4 h-4 opacity-40" />
               </button>
 
+              {/* Blog Link in Mobile Menu */}
+              <button
+                id="mobile-nav-blog"
+                onClick={() => handleNavClick('blog')}
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
+                  currentPage === 'blog' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-[#1E40AF]" />
+                  <span>Blog & Insights</span>
+                </div>
+                <ArrowRight className="w-4 h-4 opacity-40" />
+              </button>
+
               <button
                 id="mobile-nav-locations"
                 onClick={() => handleNavClick('locations')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'locations' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -571,7 +618,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="mobile-nav-about"
                 onClick={() => handleNavClick('about')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'about' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -582,7 +629,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="mobile-nav-contact"
                 onClick={() => handleNavClick('contact')}
-                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between ${
+                className={`text-left px-3 py-2.5 rounded-xl hover:bg-blue-50 flex items-center justify-between cursor-pointer ${
                   currentPage === 'contact' ? 'bg-blue-50 text-[#1E40AF] font-bold' : ''
                 }`}
               >
@@ -659,3 +706,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

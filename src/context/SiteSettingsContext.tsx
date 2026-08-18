@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PageId } from '../types';
+import { PageId, BlogPost, HeaderConfig, FooterConfig, HomePageConfig } from '../types';
+import {
+  DEFAULT_BLOG_POSTS,
+  DEFAULT_HEADER_CONFIG,
+  DEFAULT_FOOTER_CONFIG,
+  DEFAULT_HOME_PAGE_CONTENT,
+} from '../data/mockData';
 
 export interface AddressConfig {
   street: string;
@@ -65,6 +71,9 @@ export interface SiteSettings {
   nenCertificate: string;
   announcementBanner: AnnouncementBannerConfig;
   seo: SeoConfig;
+  headerConfig: HeaderConfig;
+  footerConfig: FooterConfig;
+  homePageContent: HomePageConfig;
 }
 
 export interface AdminUser {
@@ -129,9 +138,9 @@ const DEFAULT_SITE_SETTINGS: SiteSettings = {
   operatingHours:
     'Mon - Fri: 08:30 - 18:30 CET (24/7 Emergency Dispatch for active client deployments)',
   businessLicensing:
-    'Licensed Temporary Work Agency (ETT) & Certified European Cross-Border Workforce Provider',
+    'Certified European Cross-Border Workforce & Operational Outsourcing Provider',
   taxNif: 'PT 517 890 123',
-  actLicense: 'ETT Licença Nº 892/ACT',
+  actLicense: 'ACT Licença Nº 892/ACT',
   nenCertificate: 'NEN 4400-1 / SNA Certified',
   announcementBanner: {
     enabled: true,
@@ -148,6 +157,9 @@ const DEFAULT_SITE_SETTINGS: SiteSettings = {
     keywords:
       'temporary work agency portugal, temporary staffing netherlands, european workforce, outsourcing, international recruitment, rio maior staffing',
   },
+  headerConfig: DEFAULT_HEADER_CONFIG,
+  footerConfig: DEFAULT_FOOTER_CONFIG,
+  homePageContent: DEFAULT_HOME_PAGE_CONTENT,
 };
 
 const DEFAULT_ADMIN_PASSWORD_HASH = 'admin123'; // Default password
@@ -195,7 +207,8 @@ const INITIAL_INQUIRIES: InquiryRecord[] = [
   },
 ];
 
-const SETTINGS_STORAGE_KEY = 'bluegate_site_settings_v1';
+const SETTINGS_STORAGE_KEY = 'bluegate_site_settings_v2';
+const BLOGS_STORAGE_KEY = 'bluegate_blogs_v1';
 const ADMIN_AUTH_KEY = 'bluegate_admin_auth_v1';
 const ADMIN_PASSWORD_KEY = 'bluegate_admin_password_v1';
 const ADMIN_PROFILE_KEY = 'bluegate_admin_profile_v1';
@@ -204,9 +217,19 @@ const INQUIRIES_STORAGE_KEY = 'bluegate_inquiries_v1';
 interface SiteSettingsContextType {
   settings: SiteSettings;
   updateSettings: (newSettings: Partial<SiteSettings>) => void;
+  updateHeaderConfig: (newHeader: Partial<HeaderConfig>) => void;
+  updateFooterConfig: (newFooter: Partial<FooterConfig>) => void;
+  updateHomePageContent: (newContent: Partial<HomePageConfig>) => void;
   resetSettings: () => void;
   exportSettingsJson: () => string;
   importSettingsJson: (jsonString: string) => boolean;
+
+  // Blog Management
+  blogs: BlogPost[];
+  addBlogPost: (blog: Omit<BlogPost, 'id'>) => BlogPost;
+  updateBlogPost: (id: string, updated: Partial<BlogPost>) => void;
+  deleteBlogPost: (id: string) => void;
+  resetBlogs: () => void;
 
   // Admin Auth
   isAdminAuthenticated: boolean;
@@ -234,14 +257,34 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Settings State
   const [settings, setSettings] = useState<SiteSettings>(() => {
     try {
-      const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      const saved = localStorage.getItem(SETTINGS_STORAGE_KEY) || localStorage.getItem('bluegate_site_settings_v1');
       if (saved) {
-        return { ...DEFAULT_SITE_SETTINGS, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        return {
+          ...DEFAULT_SITE_SETTINGS,
+          ...parsed,
+          headerConfig: { ...DEFAULT_HEADER_CONFIG, ...(parsed.headerConfig || {}) },
+          footerConfig: { ...DEFAULT_FOOTER_CONFIG, ...(parsed.footerConfig || {}) },
+          homePageContent: { ...DEFAULT_HOME_PAGE_CONTENT, ...(parsed.homePageContent || {}) },
+        };
       }
     } catch (e) {
       console.warn('Could not load site settings from localStorage', e);
     }
     return DEFAULT_SITE_SETTINGS;
+  });
+
+  // Blogs State
+  const [blogs, setBlogs] = useState<BlogPost[]>(() => {
+    try {
+      const saved = localStorage.getItem(BLOGS_STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn('Could not load blogs from localStorage', e);
+    }
+    return DEFAULT_BLOG_POSTS;
   });
 
   // Admin Auth State
@@ -308,7 +351,7 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     // Dynamic Title
-    if (settings.seo.metaTitle) {
+    if (settings.seo?.metaTitle) {
       document.title = settings.seo.metaTitle;
     } else {
       document.title = `${settings.siteName} - ${settings.tagline}`;
@@ -325,6 +368,15 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       link.href = settings.faviconUrl;
     }
   }, [settings]);
+
+  // Sync blogs to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(blogs));
+    } catch (e) {
+      console.error('Failed to save blogs to localStorage', e);
+    }
+  }, [blogs]);
 
   // Sync inquiries to localStorage
   useEffect(() => {
@@ -359,6 +411,48 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ...prev.seo,
         ...(newSettings.seo || {}),
       },
+      headerConfig: {
+        ...prev.headerConfig,
+        ...(newSettings.headerConfig || {}),
+      },
+      footerConfig: {
+        ...prev.footerConfig,
+        ...(newSettings.footerConfig || {}),
+      },
+      homePageContent: {
+        ...prev.homePageContent,
+        ...(newSettings.homePageContent || {}),
+      },
+    }));
+  };
+
+  const updateHeaderConfig = (newHeader: Partial<HeaderConfig>) => {
+    setSettings((prev) => ({
+      ...prev,
+      headerConfig: {
+        ...prev.headerConfig,
+        ...newHeader,
+      },
+    }));
+  };
+
+  const updateFooterConfig = (newFooter: Partial<FooterConfig>) => {
+    setSettings((prev) => ({
+      ...prev,
+      footerConfig: {
+        ...prev.footerConfig,
+        ...newFooter,
+      },
+    }));
+  };
+
+  const updateHomePageContent = (newContent: Partial<HomePageConfig>) => {
+    setSettings((prev) => ({
+      ...prev,
+      homePageContent: {
+        ...prev.homePageContent,
+        ...newContent,
+      },
     }));
   };
 
@@ -371,18 +465,54 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   };
 
+  // Blog Management Methods
+  const addBlogPost = (blogData: Omit<BlogPost, 'id'>): BlogPost => {
+    const newId = `blog-${Date.now()}`;
+    const newBlog: BlogPost = {
+      ...blogData,
+      id: newId,
+      slug: blogData.slug || blogData.title.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-'),
+      publishedDate: blogData.publishedDate || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    };
+    setBlogs((prev) => [newBlog, ...prev]);
+    return newBlog;
+  };
+
+  const updateBlogPost = (id: string, updated: Partial<BlogPost>) => {
+    setBlogs((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, ...updated } : b))
+    );
+  };
+
+  const deleteBlogPost = (id: string) => {
+    setBlogs((prev) => prev.filter((b) => b.id !== id));
+  };
+
+  const resetBlogs = () => {
+    setBlogs(DEFAULT_BLOG_POSTS);
+  };
+
   const exportSettingsJson = (): string => {
-    return JSON.stringify(settings, null, 2);
+    const exportData = {
+      siteSettings: settings,
+      blogs: blogs,
+      exportedAt: new Date().toISOString(),
+    };
+    return JSON.stringify(exportData, null, 2);
   };
 
   const importSettingsJson = (jsonString: string): boolean => {
     try {
       const parsed = JSON.parse(jsonString);
       if (typeof parsed === 'object' && parsed !== null) {
-        setSettings((prev) => ({
-          ...prev,
-          ...parsed,
-        }));
+        if (parsed.siteSettings) {
+          updateSettings(parsed.siteSettings);
+        } else {
+          updateSettings(parsed);
+        }
+        if (Array.isArray(parsed.blogs)) {
+          setBlogs(parsed.blogs);
+        }
         return true;
       }
     } catch (err) {
@@ -485,9 +615,18 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       value={{
         settings,
         updateSettings,
+        updateHeaderConfig,
+        updateFooterConfig,
+        updateHomePageContent,
         resetSettings,
         exportSettingsJson,
         importSettingsJson,
+
+        blogs,
+        addBlogPost,
+        updateBlogPost,
+        deleteBlogPost,
+        resetBlogs,
 
         isAdminAuthenticated,
         adminUser,
@@ -519,3 +658,4 @@ export const useSiteSettings = () => {
   }
   return context;
 };
+
