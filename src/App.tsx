@@ -34,18 +34,29 @@ function getInitialRoute(): { page: PageId; blogSlug?: string; wasFallback?: boo
 
   let rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
 
-  // Check hash routing if user typed #/services or #about
+  // Check SPA query redirect from 404.html (e.g. /?/admin or /?p=/admin or ?admin)
+  if (!rawPath || rawPath === 'index.html') {
+    if (window.location.search) {
+      const search = window.location.search;
+      if (search.startsWith('?/')) {
+        rawPath = search.slice(2).split('&')[0].replace(/~and~/g, '&');
+      } else {
+        const params = new URLSearchParams(search);
+        const p = params.get('p') || params.get('page') || params.get('route');
+        if (p) {
+          rawPath = p.replace(/^\/+|\/+$/g, '');
+        } else if (search === '?admin' || search === '?/admin') {
+          rawPath = 'admin';
+        }
+      }
+    }
+  }
+
+  // Check hash routing if user typed #/admin or #/services or #about
   if (!rawPath || rawPath === 'index.html') {
     if (window.location.hash) {
       rawPath = window.location.hash.replace(/^#\/?/, '').replace(/\/+$/, '');
     }
-  }
-
-  // Check query param ?page=services as an additional fallback
-  if (!rawPath && window.location.search) {
-    const params = new URLSearchParams(window.location.search);
-    const p = params.get('page');
-    if (p) rawPath = p.replace(/^\/+|\/+$/g, '');
   }
 
   if (!rawPath) return { page: 'home' };
