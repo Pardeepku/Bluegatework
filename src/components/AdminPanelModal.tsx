@@ -728,6 +728,26 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
             </div>
           )}
 
+          {/* TAB: HOME PAGE SECTIONS & CONTENT */}
+          {activeTab === 'homepage' && (
+            <HomePageConfigTab onShowToast={showToast} />
+          )}
+
+          {/* TAB: HEADER CUSTOMIZER */}
+          {activeTab === 'header' && (
+            <HeaderConfigTab onShowToast={showToast} />
+          )}
+
+          {/* TAB: FOOTER CUSTOMIZER */}
+          {activeTab === 'footer' && (
+            <FooterConfigTab onShowToast={showToast} />
+          )}
+
+          {/* TAB: BLOG ARTICLES CMS */}
+          {activeTab === 'blogs' && (
+            <BlogManagerTab onShowToast={showToast} />
+          )}
+
           {/* TAB 2: BRANDING & GENERAL SETTINGS */}
           {activeTab === 'settings' && (
             <div className="space-y-8 max-w-5xl mx-auto">
