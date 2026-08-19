@@ -11,7 +11,10 @@ export type PageId =
   | 'locations'
   | 'contact'
   | 'compliance'
-  | 'blog';
+  | 'blog'
+  | 'admin'
+  | 'sitemap'
+  | 'sitemap-xml';
 
 export type LanguageCode = 'en' | 'pt' | 'nl' | 'es';
 export type Language = LanguageCode;
@@ -29,8 +32,10 @@ export interface BlogPost {
     avatarUrl?: string;
   };
   coverImageUrl: string;
+  coverImage?: string;
   publishedDate: string;
   readTimeMinutes: number;
+  readTime?: string;
   tags: string[];
   isFeatured?: boolean;
   isPublished: boolean;
@@ -99,6 +104,8 @@ export interface FooterConfig {
   operatingHours: string;
   showCopyrightBar: boolean;
   copyrightText: string;
+  registeredLocationText?: string;
+  bottomLicenseText?: string;
   showFooterCertifications: boolean;
 }
 

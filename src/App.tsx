@@ -24,15 +24,98 @@ import { ForEmployersPage } from './pages/ForEmployersPage';
 import { ForJobseekersPage } from './pages/ForJobseekersPage';
 import { LocationsPage } from './pages/LocationsPage';
 import { ContactPage } from './pages/ContactPage';
+import { AdminPage } from './pages/AdminPage';
+import { CompliancePage } from './pages/CompliancePage';
+import { SitemapPage } from './pages/SitemapPage';
+import { XmlSitemapPage } from './pages/XmlSitemapPage';
 
-function getInitialRoute(): { page: PageId; blogSlug?: string } {
+function getInitialRoute(): { page: PageId; blogSlug?: string; wasFallback?: boolean } {
   if (typeof window === 'undefined') return { page: 'home' };
-  const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
-  if (!pathname) return { page: 'home' };
 
-  if (pathname.startsWith('blog/')) {
-    const slug = pathname.replace('blog/', '');
-    return { page: 'blog', blogSlug: slug };
+  let rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+
+  // Check hash routing if user typed #/services or #about
+  if (!rawPath || rawPath === 'index.html') {
+    if (window.location.hash) {
+      rawPath = window.location.hash.replace(/^#\/?/, '').replace(/\/+$/, '');
+    }
+  }
+
+  // Check query param ?page=services as an additional fallback
+  if (!rawPath && window.location.search) {
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get('page');
+    if (p) rawPath = p.replace(/^\/+|\/+$/g, '');
+  }
+
+  if (!rawPath) return { page: 'home' };
+
+  // Normalize path (lowercase, strip trailing .html)
+  let path = rawPath.toLowerCase();
+  path = path.replace(/\.html$/i, '');
+
+  // Check blog slug routes
+  if (path.startsWith('blog/')) {
+    const slug = rawPath.substring(5).replace(/^\/+|\/+$/g, '');
+    if (slug) {
+      return { page: 'blog', blogSlug: slug };
+    }
+    return { page: 'blog' };
+  }
+
+  // Route Aliases & Mapping
+  const aliasMap: Record<string, PageId> = {
+    '': 'home',
+    'index': 'home',
+    'home': 'home',
+    'about': 'about',
+    'about-us': 'about',
+    'company': 'about',
+    'services': 'services',
+    'our-services': 'services',
+    'temporary-staffing': 'temporary-staffing',
+    'staffing': 'temporary-staffing',
+    'temp-staffing': 'temporary-staffing',
+    'outsourcing': 'outsourcing',
+    'workforce-outsourcing': 'outsourcing',
+    'international-recruitment': 'international-recruitment',
+    'relocation': 'international-recruitment',
+    'global-recruitment': 'international-recruitment',
+    'industries': 'industries',
+    'sectors': 'industries',
+    'for-employers': 'for-employers',
+    'employers': 'for-employers',
+    'hire': 'for-employers',
+    'client': 'for-employers',
+    'for-jobseekers': 'for-jobseekers',
+    'jobseekers': 'for-jobseekers',
+    'jobs': 'for-jobseekers',
+    'careers': 'for-jobseekers',
+    'vacancies': 'for-jobseekers',
+    'locations': 'locations',
+    'branches': 'locations',
+    'hubs': 'locations',
+    'contact': 'contact',
+    'contact-us': 'contact',
+    'inquiry': 'contact',
+    'compliance': 'compliance',
+    'legal': 'compliance',
+    'certifications': 'compliance',
+    'blog': 'blog',
+    'insights': 'blog',
+    'news': 'blog',
+    'articles': 'blog',
+    'admin': 'admin',
+    'control': 'admin',
+    'sitemap': 'sitemap',
+    'sitemaps': 'sitemap',
+    'html-sitemap': 'sitemap',
+    'sitemap.xml': 'sitemap-xml',
+    'sitemap-xml': 'sitemap-xml',
+  };
+
+  if (aliasMap[path]) {
+    return { page: aliasMap[path] };
   }
 
   const validPages: PageId[] = [
@@ -49,18 +132,23 @@ function getInitialRoute(): { page: PageId; blogSlug?: string } {
     'contact',
     'compliance',
     'blog',
+    'admin',
+    'sitemap',
+    'sitemap-xml',
   ];
 
-  if (validPages.includes(pathname as PageId)) {
-    return { page: pathname as PageId };
+  if (validPages.includes(path as PageId)) {
+    return { page: path as PageId };
   }
 
-  return { page: 'home' };
+  // If path does not exist in sitemap, fallback to home page as requested
+  return { page: 'home', wasFallback: true };
 }
 
 function getPathForPage(page: PageId, blogSlug?: string): string {
   if (page === 'home') return '/';
   if (page === 'blog' && blogSlug) return `/blog/${blogSlug}`;
+  if (page === 'sitemap-xml') return '/sitemap.xml';
   return `/${page}`;
 }
 
@@ -87,8 +175,12 @@ function AppContent() {
 
   const { isAdminOpen, setIsAdminOpen } = useImages();
 
-  // Listen for browser Back/Forward buttons
+  // Listen for browser Back/Forward buttons and normalize fallback URLs
   useEffect(() => {
+    if (initialRoute.wasFallback) {
+      window.history.replaceState({ page: 'home' }, '', '/');
+    }
+
     const handlePopState = () => {
       const route = getInitialRoute();
       setCurrentPage(route.page);
@@ -117,6 +209,9 @@ function AppContent() {
       contact: `Contact Us & Locations | ${settings.siteName}`,
       compliance: `Labor Compliance & Legal Standards | ${settings.siteName}`,
       blog: `Blog, Legal & Staffing Insights | ${settings.siteName}`,
+      admin: `Admin Control Center | ${settings.siteName}`,
+      sitemap: `Website Sitemap & Page Index | ${settings.siteName}`,
+      'sitemap-xml': `XML Protocol Sitemap | ${settings.siteName}`,
     };
 
     document.title = pageTitleMap[currentPage] || `${settings.siteName} | ${settings.tagline}`;
@@ -161,6 +256,11 @@ function AppContent() {
       setIsLoginModalOpen(true);
     }
   };
+
+  // If URL is /admin, render dedicated full-screen AdminPage without header/footer clutter
+  if (currentPage === 'admin') {
+    return <AdminPage onNavigate={handleNavigate} />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 font-sans selection:bg-[#1E40AF] selection:text-white">
@@ -250,6 +350,26 @@ function AppContent() {
           <ContactPage
             onNavigate={handleNavigate}
             onRequestQuote={handleOpenQuoteModal}
+          />
+        )}
+
+        {currentPage === 'compliance' && (
+          <CompliancePage
+            onNavigate={handleNavigate}
+            onRequestQuote={handleOpenQuoteModal}
+          />
+        )}
+
+        {currentPage === 'sitemap' && (
+          <SitemapPage
+            onNavigate={handleNavigate}
+            onRequestQuote={handleOpenQuoteModal}
+          />
+        )}
+
+        {currentPage === 'sitemap-xml' && (
+          <XmlSitemapPage
+            onNavigate={handleNavigate}
           />
         )}
 

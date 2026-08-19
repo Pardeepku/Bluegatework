@@ -1,0 +1,7 @@
+# Bluegate Work Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# Sitemaps
+Sitemap: https://bluegatework.com/sitemap.xml

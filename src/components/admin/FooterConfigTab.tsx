@@ -10,7 +10,8 @@ import {
   Clock,
   CheckCircle2,
   Sliders,
-  Sparkles
+  Sparkles,
+  FileText
 } from 'lucide-react';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
 import { FooterConfig } from '../../types';
@@ -229,27 +230,94 @@ export const FooterConfigTab: React.FC<FooterConfigTabProps> = ({ onShowToast })
                 className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800"
               />
             </div>
+          </div>
+        </div>
 
-            {/* Bottom Copyright Bar */}
-            <div className="p-4 bg-white border border-slate-200 rounded-2xl space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900">Copyright Bar</span>
-                <button
-                  onClick={() => handleToggle('showCopyrightBar')}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    cfg.showCopyrightBar !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
-                  }`}
-                >
-                  {cfg.showCopyrightBar !== false ? 'Visible' : 'Hidden'}
-                </button>
+        {/* 3. Dedicated Copyright & Bottom Legal Bar Customizer Widget */}
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
+                <FileText className="w-5 h-5" />
               </div>
+              <div>
+                <h4 className="text-base font-bold text-slate-900 font-heading">
+                  Copyright & Bottom Legal Bar Customizer
+                </h4>
+                <p className="text-xs text-slate-500">
+                  Update the copyright notice, registration details, compliance disclaimer, and admin link visibility.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleToggle('showCopyrightBar')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                cfg.showCopyrightBar !== false
+                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+              }`}
+            >
+              {cfg.showCopyrightBar !== false ? 'Bar Enabled' : 'Bar Disabled'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                <span>Primary Copyright Text</span>
+                <span className="text-[10px] text-slate-400">Leave blank for default year + site name</span>
+              </label>
               <input
                 type="text"
                 value={cfg.copyrightText || ''}
                 onChange={(e) => handleTextChange('copyrightText', e.target.value)}
-                placeholder="Custom copyright wording"
-                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800"
+                placeholder={`© ${new Date().getFullYear()} ${settings.siteName}. All rights reserved.`}
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:border-[#002255]"
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-800">
+                Registered Jurisdiction / Country Text
+              </label>
+              <input
+                type="text"
+                value={cfg.registeredLocationText || ''}
+                onChange={(e) => handleTextChange('registeredLocationText', e.target.value)}
+                placeholder={`Registered in ${settings.addressHQ.country} (${settings.addressHQ.city})`}
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#002255]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-800">
+                License & Compliance Sub-line
+              </label>
+              <input
+                type="text"
+                value={cfg.bottomLicenseText || ''}
+                onChange={(e) => handleTextChange('bottomLicenseText', e.target.value)}
+                placeholder="ACT Certified European Temporary Employment Agency (ETT)"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#002255]"
+              />
+            </div>
+          </div>
+
+          {/* Live Preview Box of Copyright Bar */}
+          <div className="mt-4 p-4 rounded-2xl bg-[#001a4d] text-slate-300 border border-blue-900 space-y-2">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#FFD000]">
+              Live Footer Bar Preview
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+              <div>
+                <span>{cfg.copyrightText || `© ${new Date().getFullYear()} ${settings.siteName}. All rights reserved.`}</span>
+                <span className="mx-2">•</span>
+                <span className="text-slate-400">{cfg.registeredLocationText || `Registered in ${settings.addressHQ.country} (${settings.addressHQ.city})`}</span>
+              </div>
+              <div className="text-[11px] text-[#FFD000] font-semibold">
+                [ Admin Login Link ]
+              </div>
             </div>
           </div>
         </div>

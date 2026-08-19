@@ -75,10 +75,10 @@ export const BlogManagerTab: React.FC<BlogManagerTabProps> = ({ onShowToast }) =
     setFormCategory(post.category);
     setFormExcerpt(post.excerpt);
     setFormContent(post.content);
-    setFormCoverImage(post.coverImage);
+    setFormCoverImage(post.coverImageUrl || post.coverImage || '');
     setFormAuthorName(post.author.name);
     setFormAuthorRole(post.author.role);
-    setFormReadTime(post.readTime);
+    setFormReadTime(post.readTime || `${post.readTimeMinutes || 5} min read`);
     setFormTags(post.tags.join(', '));
     setFormIsFeatured(post.isFeatured || false);
     setFormIsPublished(post.isPublished !== false);
@@ -112,12 +112,14 @@ export const BlogManagerTab: React.FC<BlogManagerTabProps> = ({ onShowToast }) =
         category: formCategory,
         excerpt: formExcerpt,
         content: formContent,
+        coverImageUrl: formCoverImage || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80',
         coverImage: formCoverImage,
         author: {
           name: formAuthorName,
           role: formAuthorRole,
-          avatar: editingPost.author.avatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+          avatarUrl: editingPost.author.avatarUrl || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
         },
+        readTimeMinutes: parseInt(formReadTime) || 5,
         readTime: formReadTime,
         tags: tagsArray,
         isFeatured: formIsFeatured,
@@ -131,12 +133,14 @@ export const BlogManagerTab: React.FC<BlogManagerTabProps> = ({ onShowToast }) =
         category: formCategory,
         excerpt: formExcerpt,
         content: formContent,
-        coverImage: formCoverImage || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80',
+        coverImageUrl: formCoverImage || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80',
+        coverImage: formCoverImage,
         author: {
           name: formAuthorName,
           role: formAuthorRole,
-          avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+          avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
         },
+        readTimeMinutes: parseInt(formReadTime) || 5,
         readTime: formReadTime,
         publishedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         tags: tagsArray,

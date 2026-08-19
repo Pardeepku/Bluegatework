@@ -201,23 +201,23 @@ export const Header: React.FC<HeaderProps> = ({
               {!isAdminAuthenticated ? (
                 <button
                   id="header-admin-login-btn"
-                  onClick={() => setIsLoginModalOpen(true)}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-colors border border-white/15 cursor-pointer"
-                  title="Admin Sign In"
+                  onClick={() => window.open('/admin', '_blank')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#FFD000] hover:text-slate-950 hover:bg-[#FFD000] transition-all border border-[#FFD000]/40 cursor-pointer shadow-xs"
+                  title="Open Admin Portal in New Tab"
                 >
-                  <Lock className="w-3 h-3 text-[#FFD000]" />
+                  <Lock className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Admin Login</span>
-                  <span className="sm:hidden">Login</span>
+                  <span className="sm:hidden">Admin</span>
                 </button>
               ) : (
-                <div className="flex items-center gap-1.5 bg-blue-950/80 px-2 py-0.5 rounded-lg border border-amber-400/40">
+                <div className="flex items-center gap-1.5 bg-blue-950/80 px-2.5 py-1 rounded-lg border border-amber-400/40">
                   <button
                     id="header-admin-panel-btn"
-                    onClick={() => setIsAdminPanelOpen(true)}
-                    className="flex items-center gap-1.5 text-[11px] font-bold text-[#FFD000] hover:text-white transition-colors cursor-pointer px-1.5 py-0.5 rounded"
-                    title="Open Admin Control Panel"
+                    onClick={() => window.open('/admin', '_blank')}
+                    className="flex items-center gap-1.5 text-xs font-bold text-[#FFD000] hover:text-white transition-colors cursor-pointer px-1.5 py-0.5 rounded"
+                    title="Open Admin Control Center in New Tab"
                   >
-                    <Sliders className="w-3 h-3" />
+                    <Sliders className="w-3.5 h-3.5" />
                     <span>Admin Panel</span>
                   </button>
 

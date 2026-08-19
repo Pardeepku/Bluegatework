@@ -325,6 +325,33 @@ export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [images]);
 
+  // Cross-tab synchronization
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          setImages((prev) => {
+            const merged = { ...prev };
+            Object.keys(parsed).forEach((k) => {
+              if (merged[k]) {
+                merged[k] = {
+                  ...merged[k],
+                  currentUrl: parsed[k].currentUrl || parsed[k],
+                };
+              }
+            });
+            return merged;
+          });
+        } catch (err) {
+          console.warn('Cross-tab image sync error:', err);
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
   const getImageUrl = (key: string, fallback?: string): string => {
     return images[key]?.currentUrl || fallback || INITIAL_IMAGE_REGISTRY[key]?.defaultUrl || '';
   };
@@ -332,26 +359,34 @@ export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateImage = (key: string, newUrl: string) => {
     setImages((prev) => {
       if (!prev[key]) return prev;
-      return {
+      const updated = {
         ...prev,
         [key]: {
           ...prev[key],
           currentUrl: newUrl.trim(),
         },
       };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
   };
 
   const resetImage = (key: string) => {
     setImages((prev) => {
       if (!prev[key]) return prev;
-      return {
+      const updated = {
         ...prev,
         [key]: {
           ...prev[key],
           currentUrl: prev[key].defaultUrl,
         },
       };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
   };
 

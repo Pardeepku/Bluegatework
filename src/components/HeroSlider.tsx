@@ -155,7 +155,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
               currentSlide === idx ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'
             }`}
             style={{
-              backgroundImage: `url(${slide.imageUrl})`,
+              backgroundImage: `url(${getImageUrl(slide.imageKey, slide.fallbackImageUrl)})`,
               backgroundPosition: idx === 1 ? 'center right' : 'center right',
               backgroundSize: 'cover',
             }}

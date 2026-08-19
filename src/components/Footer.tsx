@@ -332,6 +332,28 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                     Contact & Inquiry Hub
                   </button>
                 </li>
+                <li>
+                  <button onClick={() => handleLinkClick('compliance')} className="hover:text-white transition-colors cursor-pointer">
+                    Labor Compliance (ACT / NEN)
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('sitemap')} className="text-blue-300 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 font-medium">
+                    <Globe className="w-3 h-3 text-[#D4AF37]" />
+                    <span>HTML Sitemap</span>
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="/sitemap.xml"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-white transition-colors flex items-center gap-1.5 font-medium"
+                  >
+                    <ExternalLink className="w-3 h-3 text-[#D4AF37]" />
+                    <span>XML Sitemap (sitemap.xml)</span>
+                  </a>
+                </li>
               </ul>
 
               {/* Optional Compliance box if explicitly enabled */}
@@ -406,6 +428,30 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 text-[11px]">
+              <button
+                onClick={() => handleLinkClick('compliance')}
+                className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                Compliance & Legal
+              </button>
+              <span>•</span>
+              <button
+                onClick={() => handleLinkClick('sitemap')}
+                className="text-slate-400 hover:text-[#D4AF37] transition-colors cursor-pointer"
+              >
+                HTML Sitemap
+              </button>
+              <span>•</span>
+              <a
+                href="/sitemap.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-[#D4AF37] transition-colors"
+              >
+                XML Sitemap
+              </a>
+              <span>•</span>
+
               {footerCfg.bottomLicenseText && (
                 <>
                   <span className="text-slate-300">{footerCfg.bottomLicenseText}</span>
@@ -418,8 +464,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                 !isAdminAuthenticated ? (
                   <button
                     id="footer-admin-login-link"
-                    onClick={() => setIsLoginModalOpen(true)}
+                    onClick={() => window.open('/admin', '_blank')}
                     className="text-[#FFD000] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                    title="Open Admin Login in New Tab"
                   >
                     <Lock className="w-3 h-3 text-[#FFD000]" />
                     <span>Admin Login</span>
@@ -427,8 +474,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                 ) : (
                   <button
                     id="footer-admin-panel-link"
-                    onClick={() => setIsAdminPanelOpen(true)}
+                    onClick={() => window.open('/admin', '_blank')}
                     className="text-[#FFD000] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                    title="Open Admin Control Center in New Tab"
                   >
                     <Sliders className="w-3 h-3 text-[#FFD000]" />
                     <span>Admin Control Center</span>

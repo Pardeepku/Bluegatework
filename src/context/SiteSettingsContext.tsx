@@ -387,79 +387,145 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [inquiries]);
 
+  // Cross-tab synchronization so edits in the admin tab immediately update the website tab in real-time
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === SETTINGS_STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          setSettings((prev) => ({
+            ...DEFAULT_SITE_SETTINGS,
+            ...prev,
+            ...parsed,
+            headerConfig: { ...DEFAULT_HEADER_CONFIG, ...(parsed.headerConfig || {}) },
+            footerConfig: { ...DEFAULT_FOOTER_CONFIG, ...(parsed.footerConfig || {}) },
+            homePageContent: { ...DEFAULT_HOME_PAGE_CONTENT, ...(parsed.homePageContent || {}) },
+          }));
+        } catch (err) {
+          console.warn('Cross-tab sync error for settings:', err);
+        }
+      }
+      if (e.key === BLOGS_STORAGE_KEY && e.newValue) {
+        try {
+          setBlogs(JSON.parse(e.newValue));
+        } catch (err) {
+          console.warn('Cross-tab sync error for blogs:', err);
+        }
+      }
+      if (e.key === INQUIRIES_STORAGE_KEY && e.newValue) {
+        try {
+          setInquiries(JSON.parse(e.newValue));
+        } catch (err) {
+          console.warn('Cross-tab sync error for inquiries:', err);
+        }
+      }
+      if (e.key === ADMIN_AUTH_KEY) {
+        setIsAdminAuthenticated(e.newValue === 'true');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const saveSettingsDirectly = (next: SiteSettings) => {
+    try {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(next));
+    } catch (err) {
+      console.error('Immediate settings save error:', err);
+    }
+  };
+
   const updateSettings = (newSettings: Partial<SiteSettings>) => {
-    setSettings((prev) => ({
-      ...prev,
-      ...newSettings,
-      addressHQ: {
-        ...prev.addressHQ,
-        ...(newSettings.addressHQ || {}),
-      },
-      addressNetherlands: {
-        ...prev.addressNetherlands,
-        ...(newSettings.addressNetherlands || {}),
-      },
-      socialLinks: {
-        ...prev.socialLinks,
-        ...(newSettings.socialLinks || {}),
-      },
-      announcementBanner: {
-        ...prev.announcementBanner,
-        ...(newSettings.announcementBanner || {}),
-      },
-      seo: {
-        ...prev.seo,
-        ...(newSettings.seo || {}),
-      },
-      headerConfig: {
-        ...prev.headerConfig,
-        ...(newSettings.headerConfig || {}),
-      },
-      footerConfig: {
-        ...prev.footerConfig,
-        ...(newSettings.footerConfig || {}),
-      },
-      homePageContent: {
-        ...prev.homePageContent,
-        ...(newSettings.homePageContent || {}),
-      },
-    }));
+    setSettings((prev) => {
+      const updated: SiteSettings = {
+        ...prev,
+        ...newSettings,
+        addressHQ: {
+          ...prev.addressHQ,
+          ...(newSettings.addressHQ || {}),
+        },
+        addressNetherlands: {
+          ...prev.addressNetherlands,
+          ...(newSettings.addressNetherlands || {}),
+        },
+        socialLinks: {
+          ...prev.socialLinks,
+          ...(newSettings.socialLinks || {}),
+        },
+        announcementBanner: {
+          ...prev.announcementBanner,
+          ...(newSettings.announcementBanner || {}),
+        },
+        seo: {
+          ...prev.seo,
+          ...(newSettings.seo || {}),
+        },
+        headerConfig: {
+          ...prev.headerConfig,
+          ...(newSettings.headerConfig || {}),
+        },
+        footerConfig: {
+          ...prev.footerConfig,
+          ...(newSettings.footerConfig || {}),
+        },
+        homePageContent: {
+          ...prev.homePageContent,
+          ...(newSettings.homePageContent || {}),
+        },
+      };
+      saveSettingsDirectly(updated);
+      return updated;
+    });
   };
 
   const updateHeaderConfig = (newHeader: Partial<HeaderConfig>) => {
-    setSettings((prev) => ({
-      ...prev,
-      headerConfig: {
-        ...prev.headerConfig,
-        ...newHeader,
-      },
-    }));
+    setSettings((prev) => {
+      const updated: SiteSettings = {
+        ...prev,
+        headerConfig: {
+          ...prev.headerConfig,
+          ...newHeader,
+        },
+      };
+      saveSettingsDirectly(updated);
+      return updated;
+    });
   };
 
   const updateFooterConfig = (newFooter: Partial<FooterConfig>) => {
-    setSettings((prev) => ({
-      ...prev,
-      footerConfig: {
-        ...prev.footerConfig,
-        ...newFooter,
-      },
-    }));
+    setSettings((prev) => {
+      const updated: SiteSettings = {
+        ...prev,
+        footerConfig: {
+          ...prev.footerConfig,
+          ...newFooter,
+        },
+      };
+      saveSettingsDirectly(updated);
+      return updated;
+    });
   };
 
   const updateHomePageContent = (newContent: Partial<HomePageConfig>) => {
-    setSettings((prev) => ({
-      ...prev,
-      homePageContent: {
-        ...prev.homePageContent,
-        ...newContent,
-      },
-    }));
+    setSettings((prev) => {
+      const updated: SiteSettings = {
+        ...prev,
+        homePageContent: {
+          ...prev.homePageContent,
+          ...newContent,
+        },
+      };
+      saveSettingsDirectly(updated);
+      return updated;
+    });
   };
 
   const resetSettings = () => {
     setSettings(DEFAULT_SITE_SETTINGS);
     try {
       localStorage.removeItem(SETTINGS_STORAGE_KEY);
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(DEFAULT_SITE_SETTINGS));
     } catch (e) {
       console.error('Failed to reset settings', e);
     }
@@ -474,18 +540,34 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       slug: blogData.slug || blogData.title.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-'),
       publishedDate: blogData.publishedDate || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
     };
-    setBlogs((prev) => [newBlog, ...prev]);
+    setBlogs((prev) => {
+      const updated = [newBlog, ...prev];
+      try {
+        localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
     return newBlog;
   };
 
   const updateBlogPost = (id: string, updated: Partial<BlogPost>) => {
-    setBlogs((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, ...updated } : b))
-    );
+    setBlogs((prev) => {
+      const updatedList = prev.map((b) => (b.id === id ? { ...b, ...updated } : b));
+      try {
+        localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(updatedList));
+      } catch {}
+      return updatedList;
+    });
   };
 
   const deleteBlogPost = (id: string) => {
-    setBlogs((prev) => prev.filter((b) => b.id !== id));
+    setBlogs((prev) => {
+      const updatedList = prev.filter((b) => b.id !== id);
+      try {
+        localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(updatedList));
+      } catch {}
+      return updatedList;
+    });
   };
 
   const resetBlogs = () => {
