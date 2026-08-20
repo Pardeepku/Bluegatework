@@ -14,13 +14,6 @@ import {
   Layers, 
   MessageSquare,
   Sparkles,
-  Sliders,
-  Image as ImageIcon,
-  Lock,
-  LogOut,
-  User,
-  Settings,
-  Bell,
   BookOpen
 } from 'lucide-react';
 import { PageId, LanguageCode } from '../types';
@@ -44,14 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
   currentLang,
   onLanguageChange
 }) => {
-  const {
-    settings,
-    isAdminAuthenticated,
-    adminUser,
-    setIsLoginModalOpen,
-    setIsAdminPanelOpen,
-    logout
-  } = useSiteSettings();
+  const { settings } = useSiteSettings();
 
   const headerCfg = settings.headerConfig || {
     showTopBar: true,
@@ -188,50 +174,12 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Right info items + Admin Login/Profile Controls */}
+            {/* Right info items */}
             <div className="flex items-center gap-3 sm:gap-4 ml-auto">
               {headerCfg.showTopLicense !== false && (
                 <div className="hidden xl:flex items-center gap-1 text-[11px] text-blue-300 font-medium bg-blue-900/40 px-2 py-0.5 rounded border border-blue-800">
                   <ShieldCheck className="w-3 h-3 text-emerald-400" />
                   <span>{headerCfg.topBarLicenseText || 'ACT Certified & Compliant European ETT Provider'}</span>
-                </div>
-              )}
-
-              {/* Admin Area in Top-Right Corner */}
-              {!isAdminAuthenticated ? (
-                <button
-                  id="header-admin-login-btn"
-                  onClick={() => window.open('/admin', '_blank')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#FFD000] hover:text-slate-950 hover:bg-[#FFD000] transition-all border border-[#FFD000]/40 cursor-pointer shadow-xs"
-                  title="Open Admin Portal in New Tab"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Admin Login</span>
-                  <span className="sm:hidden">Admin</span>
-                </button>
-              ) : (
-                <div className="flex items-center gap-1.5 bg-blue-950/80 px-2.5 py-1 rounded-lg border border-amber-400/40">
-                  <button
-                    id="header-admin-panel-btn"
-                    onClick={() => window.open('/admin', '_blank')}
-                    className="flex items-center gap-1.5 text-xs font-bold text-[#FFD000] hover:text-white transition-colors cursor-pointer px-1.5 py-0.5 rounded"
-                    title="Open Admin Control Center in New Tab"
-                  >
-                    <Sliders className="w-3.5 h-3.5" />
-                    <span>Admin Panel</span>
-                  </button>
-
-                  <span className="text-blue-700">|</span>
-
-                  <button
-                    id="header-admin-logout-btn"
-                    onClick={logout}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-rose-300 hover:text-rose-100 transition-colors cursor-pointer px-1.5 py-0.5 rounded hover:bg-rose-950/50"
-                    title="Sign Out of Admin"
-                  >
-                    <LogOut className="w-3 h-3" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </button>
                 </div>
               )}
 
@@ -675,46 +623,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Mobile Bottom Actions */}
           <div className="pt-4 border-t border-slate-200 space-y-2 mt-4">
-            {/* Mobile Admin Controls */}
-            {!isAdminAuthenticated ? (
-              <button
-                id="mobile-admin-login-btn"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setIsLoginModalOpen(true);
-                }}
-                className="w-full py-2.5 px-4 rounded-xl text-center text-xs font-bold text-blue-900 bg-blue-50 border border-blue-200 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Lock className="w-3.5 h-3.5 text-[#002255]" />
-                <span>Admin Login</span>
-              </button>
-            ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  id="mobile-admin-panel-btn"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setIsAdminPanelOpen(true);
-                  }}
-                  className="py-2.5 px-3 rounded-xl text-center text-xs font-bold text-slate-900 bg-[#FFD000] hover:bg-[#ffe043] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                >
-                  <Sliders className="w-3.5 h-3.5" />
-                  <span>Admin Panel</span>
-                </button>
-                <button
-                  id="mobile-admin-logout-btn"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    logout();
-                  }}
-                  className="py-2.5 px-3 rounded-xl text-center text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Logout</span>
-                </button>
-              </div>
-            )}
-
             <button
               id="mobile-quote-btn"
               onClick={() => {

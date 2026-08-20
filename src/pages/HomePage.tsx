@@ -26,8 +26,7 @@ import {
   CORE_SERVICES,
   INDUSTRIES,
   COMPLIANCE_STANDARDS,
-  FAQS_HOMEPAGE,
-  ACTIVE_JOBS
+  FAQS_HOMEPAGE
 } from '../data/mockData';
 import { TalentMatchCalculator } from '../components/TalentMatchCalculator';
 import { HeroSlider } from '../components/HeroSlider';

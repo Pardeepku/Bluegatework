@@ -359,15 +359,22 @@ export const AdminPage: React.FC<{ onNavigate?: (page: PageId) => void }> = ({ o
           </form>
 
           <div className="pt-2 text-center">
-            <a
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-slate-400 hover:text-white flex items-center justify-center gap-1"
-            >
-              <span>Back to Public Website</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+            {onNavigate ? (
+              <button
+                type="button"
+                onClick={() => onNavigate('home')}
+                className="text-xs text-slate-400 hover:text-white inline-flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span>← Back to Public Website</span>
+              </button>
+            ) : (
+              <a
+                href="/"
+                className="text-xs text-slate-400 hover:text-white inline-flex items-center justify-center gap-1"
+              >
+                <span>← Back to Public Website</span>
+              </a>
+            )}
           </div>
         </div>
       </div>

@@ -462,9 +462,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                 !isAdminAuthenticated ? (
                   <button
                     id="footer-admin-login-link"
-                    onClick={() => window.open('/admin', '_blank')}
+                    onClick={() => handleLinkClick('admin')}
                     className="text-[#FFD000] hover:underline font-bold flex items-center gap-1 cursor-pointer"
-                    title="Open Admin Login in New Tab"
+                    title="Admin Login (/admin)"
                   >
                     <Lock className="w-3 h-3 text-[#FFD000]" />
                     <span>Admin Login</span>
@@ -472,9 +472,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                 ) : (
                   <button
                     id="footer-admin-panel-link"
-                    onClick={() => window.open('/admin', '_blank')}
+                    onClick={() => handleLinkClick('admin')}
                     className="text-[#FFD000] hover:underline font-bold flex items-center gap-1 cursor-pointer"
-                    title="Open Admin Control Center in New Tab"
+                    title="Admin Control Center (/admin)"
                   >
                     <Sliders className="w-3 h-3 text-[#FFD000]" />
                     <span>Admin Control Center</span>
