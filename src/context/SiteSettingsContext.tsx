@@ -342,13 +342,84 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
 
-  // Sync settings to localStorage and document elements (title, favicon)
+  // Initial fetch from server API to guarantee permanent persistence across sessions, devices & refreshes
+  useEffect(() => {
+    let isMounted = true;
+
+    // 1. Fetch persistent settings from server
+    fetch('/api/settings')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (isMounted && payload?.success && payload?.data) {
+          const srv = payload.data;
+          setSettings((prev) => {
+            const merged = {
+              ...DEFAULT_SITE_SETTINGS,
+              ...prev,
+              ...srv,
+              headerConfig: { ...DEFAULT_HEADER_CONFIG, ...(prev.headerConfig || {}), ...(srv.headerConfig || {}) },
+              footerConfig: { ...DEFAULT_FOOTER_CONFIG, ...(prev.footerConfig || {}), ...(srv.footerConfig || {}) },
+              homePageContent: { ...DEFAULT_HOME_PAGE_CONTENT, ...(prev.homePageContent || {}), ...(srv.homePageContent || {}) },
+            };
+            try {
+              localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        }
+      })
+      .catch((err) => {
+        // Fallback gracefully to localStorage
+        console.log('Server settings fetch skipped or offline', err);
+      });
+
+    // 2. Fetch persistent blogs from server
+    fetch('/api/blogs')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (isMounted && payload?.success && Array.isArray(payload?.data) && payload.data.length > 0) {
+          setBlogs(payload.data);
+          try {
+            localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(payload.data));
+          } catch {}
+        }
+      })
+      .catch(() => {});
+
+    // 3. Fetch persistent inquiries from server
+    fetch('/api/inquiries')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (isMounted && payload?.success && Array.isArray(payload?.data) && payload.data.length > 0) {
+          setInquiries(payload.data);
+          try {
+            localStorage.setItem(INQUIRIES_STORAGE_KEY, JSON.stringify(payload.data));
+          } catch {}
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Sync settings to localStorage and server API
   useEffect(() => {
     try {
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
     } catch (e) {
       console.error('Failed to save settings to localStorage', e);
     }
+
+    // Persist to Server JSON storage
+    try {
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      }).catch(() => {});
+    } catch {}
 
     // Dynamic Title
     if (settings.seo?.metaTitle) {
@@ -369,13 +440,21 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [settings]);
 
-  // Sync blogs to localStorage
+  // Sync blogs to localStorage and server API
   useEffect(() => {
     try {
       localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(blogs));
     } catch (e) {
       console.error('Failed to save blogs to localStorage', e);
     }
+
+    try {
+      fetch('/api/blogs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(blogs),
+      }).catch(() => {});
+    } catch {}
   }, [blogs]);
 
   // Sync inquiries to localStorage

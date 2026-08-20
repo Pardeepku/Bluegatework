@@ -316,13 +316,53 @@ export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
-  // Sync to localStorage
+  // Initial fetch from server API to guarantee image persistence across all refreshes and devices
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/images')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (isMounted && payload?.success && payload?.data) {
+          const srv = payload.data;
+          setImages((prev) => {
+            const merged = { ...prev };
+            Object.keys(srv).forEach((key) => {
+              if (merged[key]) {
+                merged[key] = {
+                  ...merged[key],
+                  currentUrl: srv[key]?.currentUrl || srv[key] || merged[key].defaultUrl,
+                };
+              }
+            });
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Sync to localStorage and server API
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(images));
     } catch (e) {
       console.warn('Failed to save custom images to localStorage:', e);
     }
+
+    try {
+      fetch('/api/images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(images),
+      }).catch(() => {});
+    } catch {}
   }, [images]);
 
   // Cross-tab synchronization

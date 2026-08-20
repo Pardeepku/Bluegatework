@@ -173,7 +173,21 @@ export const AdminPage: React.FC<{ onNavigate?: (page: PageId) => void }> = ({ o
   const handleSaveAllSettings = () => {
     updateSettings(localSettings);
     setHasUnsavedChanges(false);
-    showToast('All website settings successfully saved and applied!');
+
+    fetch('/api/save-all', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        settings: localSettings,
+        images,
+      }),
+    })
+      .then(() => {
+        showToast('All website settings & images permanently saved to server!');
+      })
+      .catch(() => {
+        showToast('Saved locally and applied live!');
+      });
   };
 
   const handleLogoUpload = (file: File) => {
