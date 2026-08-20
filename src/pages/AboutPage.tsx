@@ -6,6 +6,7 @@ import {
   Award, 
   Users, 
   Building2, 
+  Globe,
   Globe2, 
   MapPin, 
   Phone, 
@@ -182,21 +183,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onRequestQuote
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-6 space-y-4">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
-                <MapPin className="w-4 h-4" />
-                <span>Portuguese Global Headquarters</span>
+                <Globe className="w-4 h-4" />
+                <span>European Operations</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold font-heading text-white">
                 Rooted in Portugal, Serving Europe & Beyond
               </h3>
               <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                Our central European headquarters in Rio Maior, Santarém oversees our continental recruitment, legal compliance, and consular processing infrastructure.
+                Our operations in Portugal oversee our continental recruitment, legal compliance, and consular processing infrastructure across Europe.
               </p>
               
               <div className="space-y-2 pt-2 text-xs text-slate-300">
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-blue-400" />
-                  <span><strong>Official Address:</strong> {COMPANY_INFO.address.full}</span>
-                </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-blue-400" />
                   <span><strong>Phone / WhatsApp:</strong> {COMPANY_INFO.phoneDisplay}</span>

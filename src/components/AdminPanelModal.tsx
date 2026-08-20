@@ -1300,10 +1300,10 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                 <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-bold text-slate-900 font-heading">
-                      Global Headquarters Address (Portugal)
+                      Portugal Headquarters
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Primary corporate address in Rio Maior, Santarém.
+                      Primary corporate location in Portugal.
                     </p>
                   </div>
                   <span className="text-2xl">🇵🇹</span>

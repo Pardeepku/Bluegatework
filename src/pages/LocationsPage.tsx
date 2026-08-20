@@ -41,7 +41,7 @@ export const LocationsPage: React.FC<LocationsPageProps> = ({
             Strategic Presence Across Portugal, Netherlands & Worldwide.
           </h1>
           <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
-            Headquartered in Rio Maior, Santarém, Portugal with operational branches in the Netherlands and verified sourcing corridors spanning Europe, Asia, and Latin America.
+            Headquartered in Portugal with operational branches in the Netherlands and verified sourcing corridors spanning Europe, Asia, and Latin America.
           </p>
         </div>
       </section>

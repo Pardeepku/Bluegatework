@@ -207,7 +207,7 @@ function AppContent() {
   useEffect(() => {
     // Update Document Title based on current page
     const pageTitleMap: Record<PageId, string> = {
-      home: `${settings.siteName} | ${settings.tagline}`,
+      home: settings.tagline ? `${settings.siteName} | ${settings.tagline}` : `${settings.siteName} | Global Workforce Provider in Portugal & Netherlands`,
       about: `About Us | ${settings.siteName}`,
       services: `Workforce Services & Staffing | ${settings.siteName}`,
       'temporary-staffing': `Temporary Staffing Solutions | ${settings.siteName}`,
@@ -225,7 +225,7 @@ function AppContent() {
       'sitemap-xml': `XML Protocol Sitemap | ${settings.siteName}`,
     };
 
-    document.title = pageTitleMap[currentPage] || `${settings.siteName} | ${settings.tagline}`;
+    document.title = pageTitleMap[currentPage] || `${settings.siteName} | Global Workforce Provider`;
 
     // Update Favicon if custom favicon provided
     if (settings.faviconUrl) {

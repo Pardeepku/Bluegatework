@@ -148,7 +148,7 @@ export const SitemapPage: React.FC<SitemapPageProps> = ({ onNavigate, onRequestQ
           url: '/for-employers',
           slug: 'for-employers',
           pageId: 'for-employers' as PageId,
-          description: 'Enterprise staffing consultation, fast headcount quotes, SLA options, and client testimonials.',
+          description: 'Enterprise staffing consultation, fast headcount quotes, SLA options, and verified workforce frameworks.',
           priority: '0.9',
           changefreq: 'Weekly',
         },

@@ -12,7 +12,13 @@ import {
   ExternalLink,
   Sliders,
   Lock,
-  Share2
+  Share2,
+  Linkedin,
+  Facebook,
+  Instagram,
+  Youtube,
+  Twitter,
+  MessageCircle
 } from 'lucide-react';
 import { PageId } from '../types';
 import { CORE_SERVICES, INDUSTRIES } from '../data/mockData';
@@ -125,14 +131,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
               </p>
 
               <div className="space-y-3 text-xs text-slate-300">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-white">Global Headquarters ({settings.addressHQ.country}):</div>
-                    <p className="text-slate-400 leading-snug">{settings.addressHQ.full}</p>
-                  </div>
-                </div>
-
                 <div className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-blue-400 shrink-0" />
                   <div>
@@ -168,10 +166,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                       href={settings.socialLinks.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#002366] text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#0077b5] text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-[#0077b5] shadow-xs"
                       aria-label="LinkedIn"
+                      title="LinkedIn"
                     >
-                      IN
+                      <Linkedin className="w-4 h-4" />
                     </a>
                   )}
                   {settings.socialLinks.facebook && (
@@ -179,10 +178,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                       href={settings.socialLinks.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#002366] text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#1877f2] text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-[#1877f2] shadow-xs"
                       aria-label="Facebook"
+                      title="Facebook"
                     >
-                      FB
+                      <Facebook className="w-4 h-4" />
                     </a>
                   )}
                   {settings.socialLinks.instagram && (
@@ -190,10 +190,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                       href={settings.socialLinks.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#002366] text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#E4405F] text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-[#E4405F] shadow-xs"
                       aria-label="Instagram"
+                      title="Instagram"
                     >
-                      IG
+                      <Instagram className="w-4 h-4" />
                     </a>
                   )}
                   {settings.socialLinks.youtube && (
@@ -201,10 +202,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                       href={settings.socialLinks.youtube}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#002366] text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#FF0000] text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-[#FF0000] shadow-xs"
                       aria-label="YouTube"
+                      title="YouTube"
                     >
-                      YT
+                      <Youtube className="w-4 h-4" />
                     </a>
                   )}
                   {settings.socialLinks.twitter && (
@@ -212,10 +214,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                       href={settings.socialLinks.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#002366] text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-black text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-slate-600 shadow-xs"
                       aria-label="Twitter / X"
+                      title="Twitter / X"
                     >
-                      X
+                      <Twitter className="w-4 h-4" />
                     </a>
                   )}
                   {settings.socialLinks.telegram && (
@@ -223,20 +226,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                       href={settings.socialLinks.telegram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#002366] text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                      className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#229ED9] text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-[#229ED9] shadow-xs"
                       aria-label="Telegram"
+                      title="Telegram"
                     >
-                      TG
+                      <Send className="w-3.5 h-3.5" />
                     </a>
                   )}
                   <a
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-emerald-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-blue-800 text-xs font-bold"
+                    className="w-8 h-8 rounded-lg bg-blue-950/80 hover:bg-[#25D366] text-slate-300 hover:text-white flex items-center justify-center transition-all border border-blue-800 hover:border-[#25D366] shadow-xs"
                     aria-label="WhatsApp"
+                    title="WhatsApp"
                   >
-                    WA
+                    <MessageCircle className="w-4 h-4" />
                   </a>
                 </div>
               )}
@@ -294,7 +299,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
           {footerCfg.showNavigationCol !== false && (
             <div className="lg:col-span-2 space-y-4">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#D4AF37] font-heading">
-                {footerCfg.navigationColTitle || 'Company & Hubs'}
+                {footerCfg.navigationColTitle || 'Quick Links'}
               </h4>
               <ul className="space-y-2 text-xs text-slate-400">
                 <li>
@@ -323,13 +328,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('locations')} className="hover:text-white transition-colors cursor-pointer">
-                    Locations (Portugal & NL)
-                  </button>
-                </li>
-                <li>
                   <button onClick={() => handleLinkClick('contact')} className="hover:text-white transition-colors cursor-pointer">
-                    Contact & Inquiry Hub
+                    Contact Us
                   </button>
                 </li>
                 <li>
@@ -423,8 +423,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onRequestQuote }) =>
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
             <div className="flex flex-wrap items-center gap-2 text-center sm:text-left">
               <span>{footerCfg.copyrightText || `© ${new Date().getFullYear()} ${settings.siteName}. All rights reserved.`}</span>
-              <span className="hidden sm:inline">•</span>
-              <span>{footerCfg.registeredLocationText || `Registered in ${settings.addressHQ.country} (${settings.addressHQ.city})`}</span>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 text-[11px]">

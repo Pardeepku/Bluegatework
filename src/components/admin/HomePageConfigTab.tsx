@@ -10,7 +10,6 @@ import {
   Globe,
   Briefcase,
   HelpCircle,
-  Star,
   CheckCircle2,
   FileText
 } from 'lucide-react';
@@ -52,8 +51,7 @@ export const HomePageConfigTab: React.FC<HomePageConfigTabProps> = ({ onShowToas
     { key: 'showGlobalCorridor', label: '7. Global Footprint & Sourcing Hubs', icon: Globe, desc: 'Portugal HQ, Netherlands, Eastern Europe, Asia/LATAM' },
     { key: 'showProcessSection', label: '8. 4-Stage Compliance & Delivery Process', icon: FileText, desc: 'Step 01 to 04 operational roadmap' },
     { key: 'showComplianceShield', label: '9. European Compliance Shield (ACT/SNA)', icon: ShieldCheck, desc: 'Legal indemnity and cross-border protection section' },
-    { key: 'showTestimonials', label: '10. Testimonials & Client Reviews', icon: Star, desc: 'Verified 5-star ratings and reviews' },
-    { key: 'showFaqSection', label: '11. Frequently Asked Questions Accordion', icon: HelpCircle, desc: 'Accordion with quick answers' },
+    { key: 'showFaqSection', label: '10. Frequently Asked Questions Accordion', icon: HelpCircle, desc: 'Accordion with quick answers' },
   ];
 
   return (

@@ -1,104 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
 
 interface LogoProps {
   variant?: 'light' | 'dark' | 'white';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
   showTagline?: boolean;
 }
 
 export const Logo: React.FC<LogoProps> = ({
   variant = 'dark',
   size = 'md',
-  showTagline = false
+  className = '',
 }) => {
   const { settings } = useSiteSettings();
+  const [imgError, setImgError] = useState(false);
   const isWhite = variant === 'white';
 
-  const iconSizes = {
-    sm: 'w-7 h-7',
-    md: 'w-10 h-10',
-    lg: 'w-12 h-12'
+  const sizeClasses = {
+    sm: 'h-8 sm:h-9 max-w-[170px]',
+    md: 'h-10 sm:h-12 md:h-13 max-w-[240px]',
+    lg: 'h-14 sm:h-16 md:h-20 max-w-[320px]',
+    xl: 'h-20 sm:h-24 md:h-28 max-w-[400px]',
   };
 
-  const textSizes = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-3xl'
-  };
-
-  const logoImgHeights = {
-    sm: 'h-7',
-    md: 'h-10',
-    lg: 'h-12'
-  };
-
-  // If custom logo image is provided in site settings
-  if (settings.logoUrl) {
-    return (
-      <div className="flex items-center gap-3 select-none group cursor-pointer">
-        <img
-          src={settings.logoUrl}
-          alt={settings.siteName}
-          className={`${logoImgHeights[size]} w-auto object-contain max-w-[200px]`}
-        />
-        {showTagline && (
-          <span
-            className={`text-[9px] tracking-widest uppercase font-bold mt-0.5 ${
-              isWhite ? 'text-white/70' : 'text-slate-500'
-            }`}
-          >
-            {settings.tagline}
-          </span>
-        )}
-      </div>
-    );
+  // Determine logo source
+  let logoSrc = isWhite ? '/bluegate-logo-white.svg' : '/bluegate-logo.svg';
+  if (settings.logoUrl && !imgError) {
+    logoSrc = settings.logoUrl;
   }
 
-  // Parse words for two-tone styling
-  const nameParts = settings.siteName.split(' ');
-  const firstWord = nameParts[0] || 'Bluegate';
-  const remainingWords = nameParts.slice(1).join(' ') || 'Work';
-
   return (
-    <div className="flex items-center gap-3 select-none group cursor-pointer">
-      {/* Brand Icon: Deep Navy Box with Rotated Diamond & Golden Core Accent */}
-      <div className={`relative flex items-center justify-center ${iconSizes[size]} rounded-xl ${isWhite ? 'bg-white/10 border border-white/20' : 'bg-[#002366]'} shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform duration-300`}>
-        <div className="w-5 h-5 border-2 border-white rounded-xs rotate-45 flex items-center justify-center">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></div>
-        </div>
-      </div>
-
-      {/* Brand Name Typography */}
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1 leading-none">
-          <span
-            className={`font-black tracking-tight font-heading ${textSizes[size]} ${
-              isWhite ? 'text-white' : 'text-[#002366]'
+    <div className={`inline-flex items-center select-none group cursor-pointer ${className}`}>
+      {!imgError ? (
+        <img
+          src={logoSrc}
+          alt={settings.siteName || 'Blue Gate Work'}
+          className={`${sizeClasses[size]} w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]`}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        /* Vector Fallback if SVG fails to load */
+        <div className="flex items-center gap-3">
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center font-serif font-black text-xl shadow-md ${
+              isWhite ? 'bg-white text-[#002D62]' : 'bg-[#002D62] text-[#D4AF37]'
             }`}
           >
-            {firstWord}
-          </span>
-          <span
-            className={`font-black tracking-tight font-heading ${textSizes[size]} ${
-              isWhite ? 'text-[#D4AF37]' : 'text-[#0056b3]'
-            } group-hover:opacity-90 transition-colors`}
-          >
-            {remainingWords}
-          </span>
+            BG
+          </div>
+          <div className="flex flex-col">
+            <span
+              className={`font-serif font-black tracking-wider text-xl leading-none ${
+                isWhite ? 'text-white' : 'text-[#002D62]'
+              }`}
+            >
+              BLUE GATE
+            </span>
+            <span
+              className={`text-[9px] font-semibold tracking-widest uppercase mt-0.5 ${
+                isWhite ? 'text-[#FCD34D]' : 'text-[#B38027]'
+              }`}
+            >
+              Gate for Opportunities
+            </span>
+          </div>
         </div>
-        {showTagline && (
-          <span
-            className={`text-[9px] tracking-widest uppercase font-bold mt-0.5 ${
-              isWhite ? 'text-white/70' : 'text-slate-500'
-            }`}
-          >
-            {settings.tagline || 'Global Workforce Solutions'}
-          </span>
-        )}
-      </div>
+      )}
     </div>
   );
 };
-
-

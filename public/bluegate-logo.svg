@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 280" width="100%" height="100%">
+  <defs>
+    <!-- Gradients & Filters -->
+    <linearGradient id="gateBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002D62"/>
+      <stop offset="100%" stop-color="#001A3D"/>
+    </linearGradient>
+    <linearGradient id="goldArch" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C59B27"/>
+      <stop offset="50%" stop-color="#B38027"/>
+      <stop offset="100%" stop-color="#8C6218"/>
+    </linearGradient>
+    <linearGradient id="trailGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94A3B8" stop-opacity="0"/>
+      <stop offset="60%" stop-color="#64748B" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#002D62" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ==================== GATE ICON (LEFT) ==================== -->
+  <g transform="translate(10, 5)">
+    <!-- Classical Arch Frame -->
+    <!-- Outer Arch Ring -->
+    <path d="M 30 200 L 30 70 A 65 65 0 0 1 160 70 L 160 200 L 146 200 L 146 70 A 51 51 0 0 0 44 70 L 44 200 Z" fill="#002D62" />
+
+    <!-- Left Column Pedestal & Capital -->
+    <rect x="24" y="60" width="22" height="8" rx="2" fill="#002D62" />
+    <rect x="28" y="68" width="14" height="128" fill="#002D62" />
+    <rect x="22" y="196" width="26" height="10" rx="2" fill="#002D62" />
+    <rect x="18" y="206" width="34" height="8" rx="2" fill="#002D62" />
+
+    <!-- Right Column Pedestal & Capital -->
+    <rect x="144" y="60" width="22" height="8" rx="2" fill="#002D62" />
+    <rect x="148" y="68" width="14" height="128" fill="#002D62" />
+    <rect x="142" y="196" width="26" height="10" rx="2" fill="#002D62" />
+    <rect x="138" y="206" width="34" height="8" rx="2" fill="#002D62" />
+
+    <!-- Airplane & Flight Trail -->
+    <path d="M 60 90 Q 75 45 98 32" fill="none" stroke="url(#trailGrad)" stroke-width="2.5" stroke-linecap="round" />
+    <!-- Jet Silhouette -->
+    <g transform="translate(98, 30) rotate(-45)">
+      <path d="M 0 -8 L 3 -3 L 9 0 L 3 3 L 2 7 L 0 5 L -2 7 L -3 3 L -9 0 L -3 -3 Z" fill="#002D62" />
+    </g>
+
+    <!-- Golden Cityscape Silhouettes (Historical Lisbon/European Monuments) -->
+    <g fill="url(#goldArch)">
+      <!-- Ground Path/Roadway curve -->
+      <path d="M 44 198 Q 95 145 146 198 L 146 204 L 44 204 Z" opacity="0.95" />
+      <!-- Left Tower & Battlements -->
+      <rect x="52" y="130" width="10" height="60" />
+      <polygon points="57,105 52,130 62,130" />
+      <rect x="64" y="145" width="16" height="45" />
+      <polygon points="64,145 68,140 72,145 76,140 80,145" />
+      <!-- Center Castle / Cathedral Spire -->
+      <rect x="82" y="138" width="18" height="52" />
+      <polygon points="82,138 86,132 91,138 96,132 100,138" />
+      <polygon points="91,118 87,138 95,138" />
+      <!-- Right Turret -->
+      <rect x="102" y="150" width="14" height="40" />
+      <polygon points="102,150 106,145 109,150 113,145 116,150" />
+      <!-- Arch windows cutouts -->
+      <rect x="55" y="140" width="4" height="8" rx="2" fill="#002D62" opacity="0.3"/>
+      <rect x="70" y="155" width="4" height="8" rx="2" fill="#002D62" opacity="0.3"/>
+      <rect x="88" y="150" width="4" height="8" rx="2" fill="#002D62" opacity="0.3"/>
+    </g>
+
+    <!-- Open Iron Gate Doors (Perspective Swung Open) -->
+    <!-- Left Open Gate Door -->
+    <g transform="translate(44, 70)">
+      <path d="M 0 0 L 22 15 L 22 130 L 0 120 Z" fill="#002D62" />
+      <path d="M 2 5 L 20 18 L 20 60 L 2 55 Z" fill="#FFFFFF" opacity="0.85" />
+      <path d="M 2 65 L 20 68 L 20 122 L 2 115 Z" fill="#001A3D" />
+      <!-- Grille Bars -->
+      <line x1="6" y1="8" x2="6" y2="56" stroke="#002D62" stroke-width="1.5" />
+      <line x1="11" y1="12" x2="11" y2="57" stroke="#002D62" stroke-width="1.5" />
+      <line x1="16" y1="15" x2="16" y2="59" stroke="#002D62" stroke-width="1.5" />
+      <!-- Spikes on Top -->
+      <polygon points="6,6 4,1 8,1" fill="#002D62" />
+      <polygon points="11,10 9,5 13,5" fill="#002D62" />
+      <polygon points="16,13 14,8 18,8" fill="#002D62" />
+    </g>
+
+    <!-- Right Open Gate Door -->
+    <g transform="translate(124, 70)">
+      <path d="M 22 0 L 0 15 L 0 130 L 22 120 Z" fill="#002D62" />
+      <path d="M 20 5 L 2 18 L 2 60 L 20 55 Z" fill="#FFFFFF" opacity="0.85" />
+      <path d="M 20 65 L 2 68 L 2 122 L 20 115 Z" fill="#001A3D" />
+      <!-- Grille Bars -->
+      <line x1="16" y1="8" x2="16" y2="56" stroke="#002D62" stroke-width="1.5" />
+      <line x1="11" y1="12" x2="11" y2="57" stroke="#002D62" stroke-width="1.5" />
+      <line x1="6" y1="15" x2="6" y2="59" stroke="#002D62" stroke-width="1.5" />
+      <!-- Spikes on Top -->
+      <polygon points="16,6 14,1 18,1" fill="#002D62" />
+      <polygon points="11,10 9,5 13,5" fill="#002D62" />
+      <polygon points="6,13 4,8 8,8" fill="#002D62" />
+    </g>
+  </g>
+
+  <!-- ==================== TYPOGRAPHY (RIGHT) ==================== -->
+  <g transform="translate(230, 20)">
+    <!-- "BLUE GATE" Wordmark -->
+    <text x="0" y="115" font-family="'Times New Roman', 'Playfair Display', Georgia, serif" font-size="115" font-weight="900" fill="#002D62" letter-spacing="4">
+      BLUE G<tspan letter-spacing="2">A</tspan>TE
+    </text>
+
+    <!-- Wave flourish on the A in GATE -->
+    <path d="M 522 92 Q 555 76 588 94 Q 612 106 638 90" fill="none" stroke="#002D62" stroke-width="7" stroke-linecap="round" />
+
+    <!-- Subtitle: GATE FOR OPPORTUNITIES | GATE FOR THE BETTER FUTURE -->
+    <text x="12" y="160" font-family="'Plus Jakarta Sans', 'Outfit', 'Helvetica Neue', sans-serif" font-size="21" font-weight="700" fill="#B38027" letter-spacing="3.5">
+      GATE FOR OPPORTUNITIES  <tspan fill="#A07220" font-weight="400">|</tspan>  GATE FOR THE BETTER FUTURE
+    </text>
+
+    <!-- Bottom Portuguese Subtitle: Agência de trabalho temporário e LDA -->
+    <text x="-215" y="240" font-family="'Plus Jakarta Sans', 'Outfit', 'Segoe UI', sans-serif" font-size="44" font-weight="600" fill="#005CA9" letter-spacing="0.5">
+      Agência de trabalho temporário e LDA
+    </text>
+  </g>
+</svg>

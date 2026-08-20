@@ -8,7 +8,6 @@ import {
   Building2,
   Zap,
   CheckCircle2,
-  Star,
   ChevronRight,
   MapPin,
   Phone,
@@ -26,7 +25,6 @@ import {
   TRUST_METRICS,
   CORE_SERVICES,
   INDUSTRIES,
-  TESTIMONIALS,
   COMPLIANCE_STANDARDS,
   FAQS_HOMEPAGE,
   ACTIVE_JOBS
@@ -315,7 +313,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {hp.corridorHeading || 'From Portugal to Netherlands & Worldwide'}
               </h2>
               <p className="text-blue-100 text-sm sm:text-base">
-                {hp.corridorSubheading || 'Headquartered in Rio Maior, Santarém, Portugal with operational branches in the Netherlands and global sourcing pipelines in Europe, Asia, and Latin America.'}
+                {hp.corridorSubheading || 'Operating across Portugal with operational branches in the Netherlands and global sourcing pipelines in Europe, Asia, and Latin America.'}
               </p>
             </div>
 
@@ -325,12 +323,12 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <span className="text-xs font-bold text-amber-300 uppercase">Headquarters</span>
                   <span className="text-lg">🇵🇹</span>
                 </div>
-                <h3 className="text-lg font-bold text-white font-heading">Portugal (Rio Maior)</h3>
+                <h3 className="text-lg font-bold text-white font-heading">Portugal</h3>
                 <p className="text-xs text-blue-100/80 leading-relaxed">
-                  RUA DOM FERNANDO I 25, Rio Maior, Santarém. Central leadership, Southern European staffing, and consular operations.
+                  Portugal operations. Central leadership, European staffing coordination, and consular operations.
                 </p>
                 <div className="text-[11px] text-amber-300 font-semibold pt-1">
-                  Active Staffing: 5,800+ Placements
+                  Active Staffing: 500+ Placements
                 </div>
               </div>
 
@@ -341,10 +339,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
                 <h3 className="text-lg font-bold text-white font-heading">Netherlands</h3>
                 <p className="text-xs text-blue-100/80 leading-relaxed">
-                  Rotterdam / Tilburg hub. Rapid logistics surge staffing, high-tech glasshouse horticulture, and certified SNF housing.
+                  Rotterdam / Tilburg desk. Rapid logistics surge staffing, high-tech glasshouse horticulture, and certified SNF housing.
                 </p>
                 <div className="text-[11px] text-amber-300 font-semibold pt-1">
-                  Active Staffing: 4,200+ Personnel
+                  Active Staffing: Key Operations
                 </div>
               </div>
 
@@ -481,52 +479,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </section>
       )}
 
-      {/* 9. TESTIMONIALS */}
-      {hp.showTestimonials !== false && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="px-3 py-1 rounded-full bg-blue-100 text-[#1E40AF] text-xs font-bold uppercase tracking-wider">
-              Verified Experiences
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-950 font-heading tracking-tight">
-              {hp.testimonialsHeading || 'Trusted by Employers & Candidates Alike'}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {TESTIMONIALS.map((t) => (
-              <div
-                key={t.id}
-                className="bg-white rounded-3xl p-7 border border-slate-200 shadow-md shadow-blue-950/5 space-y-4 flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1 text-amber-400">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                    "{t.quote}"
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-extrabold text-slate-900">{t.authorName}</div>
-                    <div className="text-[11px] text-slate-500">{t.role}</div>
-                    <div className="text-[10px] text-[#1E40AF] font-semibold">{t.companyOrCountry}</div>
-                  </div>
-                  <span className="text-[10px] px-2 py-1 rounded-md bg-blue-50 text-[#1E40AF] font-bold">
-                    {t.serviceUsed}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 10. FAQ ACCORDION */}
+      {/* 9. FAQ ACCORDION */}
       {hp.showFaqSection !== false && (
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center space-y-2">

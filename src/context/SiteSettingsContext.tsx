@@ -98,7 +98,7 @@ export interface InquiryRecord {
 const DEFAULT_SITE_SETTINGS: SiteSettings = {
   siteName: 'Bluegate Work',
   siteShortName: 'Bluegate',
-  tagline: 'Your Gateway to Global Workforce & European Staffing Solutions',
+  tagline: '',
   shortDesc:
     'Premier European workforce provider operating across Portugal, the Netherlands, and globally. Delivering compliant temporary staffing, managed outsourcing, and international talent recruitment.',
   logoUrl: '',
@@ -112,19 +112,19 @@ const DEFAULT_SITE_SETTINGS: SiteSettings = {
   emailSupport: 'support@bluegatework.com',
   emailRecruitment: 'recruitment@bluegatework.com',
   addressHQ: {
-    street: 'RUA DOM FERNANDO I 25 RIO MAIOR RIO MAIOR',
-    city: 'Rio Maior',
-    district: 'Santarém',
-    postalCode: '2040-265',
+    street: '',
+    city: 'Portugal',
+    district: '',
+    postalCode: '',
     country: 'Portugal',
-    full: 'RUA DOM FERNANDO I 25 RIO MAIOR RIO MAIOR, Rio Maior, Santarém, 2040-265, Portugal',
+    full: 'Portugal & Netherlands Operations',
   },
   addressNetherlands: {
-    street: 'Keizersgracht 482',
-    city: 'Amsterdam',
-    postalCode: '1016 EG',
+    street: '',
+    city: 'Netherlands',
+    postalCode: '',
     country: 'Netherlands',
-    full: 'Keizersgracht 482, 1016 EG Amsterdam, Netherlands',
+    full: 'Netherlands Operations Desk',
   },
   socialLinks: {
     facebook: 'https://facebook.com/bluegatework',
@@ -424,8 +424,10 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     // Dynamic Title
     if (settings.seo?.metaTitle) {
       document.title = settings.seo.metaTitle;
-    } else {
+    } else if (settings.tagline) {
       document.title = `${settings.siteName} - ${settings.tagline}`;
+    } else {
+      document.title = `${settings.siteName} | Global Workforce Provider in Portugal & Netherlands`;
     }
 
     // Dynamic Favicon if custom is uploaded
@@ -705,7 +707,7 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return { success: true };
     }
 
-    return { success: false, error: 'Invalid username/email or password. Default is "admin" and "admin123".' };
+    return { success: false, error: 'Invalid username/email or password. Please check your credentials.' };
   };
 
   const logout = () => {

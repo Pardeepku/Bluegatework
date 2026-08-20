@@ -322,7 +322,7 @@ export const AdminPage: React.FC<{ onNavigate?: (page: PageId) => void }> = ({ o
                 type="text"
                 value={loginUser}
                 onChange={(e) => setLoginUser(e.target.value)}
-                placeholder="admin"
+                placeholder="Enter admin username"
                 className="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-[#FFD000]"
                 required
               />
@@ -335,7 +335,7 @@ export const AdminPage: React.FC<{ onNavigate?: (page: PageId) => void }> = ({ o
                   type={showLoginPass ? 'text' : 'password'}
                   value={loginPass}
                   onChange={(e) => setLoginPass(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter admin password"
                   className="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-[#FFD000] pr-10"
                   required
                 />
@@ -347,24 +347,6 @@ export const AdminPage: React.FC<{ onNavigate?: (page: PageId) => void }> = ({ o
                   {showLoginPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-            </div>
-
-            <div className="p-3 bg-blue-950/60 rounded-xl border border-blue-800/40 text-[11px] text-blue-200 space-y-1">
-              <div className="font-bold flex items-center justify-between text-[#FFD000]">
-                <span>Default Credentials:</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginUser('admin');
-                    setLoginPass('admin123');
-                  }}
-                  className="text-[10px] bg-blue-800/70 px-2 py-0.5 rounded text-white hover:bg-blue-700 cursor-pointer"
-                >
-                  Auto-fill
-                </button>
-              </div>
-              <div>Username: <span className="font-mono font-bold text-white">admin</span></div>
-              <div>Password: <span className="font-mono font-bold text-white">admin123</span></div>
             </div>
 
             <button
@@ -1063,10 +1045,10 @@ export const AdminPage: React.FC<{ onNavigate?: (page: PageId) => void }> = ({ o
             <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-bold text-slate-900 font-heading">
-                  Global Headquarters Address (Portugal)
+                  Portugal Headquarters
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Primary corporate location in Rio Maior, Santarém, Portugal.
+                  Primary corporate location in Portugal.
                 </p>
               </div>
 

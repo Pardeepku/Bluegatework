@@ -22,7 +22,7 @@ interface AdminLoginModalProps {
 export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClose }) => {
   const { login, setIsAdminPanelOpen, settings } = useSiteSettings();
 
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -46,12 +46,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
         setErrorMessage(res.error || 'Authentication failed. Please check your credentials.');
       }
     }, 300);
-  };
-
-  const handleFillDemo = () => {
-    setUsername('admin');
-    setPassword('admin123');
-    setErrorMessage(null);
   };
 
   return (
@@ -97,26 +91,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
 
         {/* Form Body */}
         <div className="p-6 space-y-5">
-          {/* Quick Demo Helper Prompt */}
-          <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex items-start justify-between gap-3 text-xs">
-            <div className="space-y-1">
-              <div className="font-bold text-amber-900 flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-amber-700" />
-                <span>Default Credentials:</span>
-              </div>
-              <div className="text-amber-800 text-[11px]">
-                Username: <code className="bg-amber-100 px-1 py-0.5 rounded font-mono font-bold">admin</code> &bull; Password: <code className="bg-amber-100 px-1 py-0.5 rounded font-mono font-bold">admin123</code>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleFillDemo}
-              className="px-2.5 py-1.5 bg-amber-200/80 hover:bg-amber-300 text-amber-950 font-bold rounded-lg text-[11px] whitespace-nowrap transition-colors cursor-pointer"
-            >
-              Fill Credentials
-            </button>
-          </div>
-
           {errorMessage && (
             <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-semibold flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
@@ -138,7 +112,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="e.g. admin"
+                  placeholder="Enter admin username"
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-[#002255] focus:ring-2 focus:ring-[#002255]/20 font-medium"
                 />
               </div>
@@ -146,12 +120,9 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
 
             {/* Password Field */}
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700 block">
-                  Password
-                </label>
-                <span className="text-[11px] text-slate-400">Default: admin123</span>
-              </div>
+              <label className="text-xs font-bold text-slate-700 block">
+                Password
+              </label>
               <div className="relative">
                 <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input

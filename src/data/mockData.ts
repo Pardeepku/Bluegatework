@@ -3,19 +3,19 @@ import { ServiceItem, IndustryItem, JobPosting, Testimonial, LocationHub } from 
 export const COMPANY_INFO = {
   name: 'Bluegate Work',
   legalName: 'Bluegate Work Lda',
-  tagline: 'Your Gateway to Global Workforce & European Staffing Solutions',
+  tagline: '',
   shortDesc: 'Premier European workforce provider operating across Portugal, the Netherlands, and globally. Delivering compliant temporary staffing, managed outsourcing, and international talent recruitment.',
   phone: '+351 920 132 915',
   phoneDisplay: '+351 920 132 915',
   email: 'info@bluegatework.com',
   website: 'https://bluegatework.com',
   address: {
-    street: 'RUA DOM FERNANDO I 25 RIO MAIOR RIO MAIOR',
-    city: 'Rio Maior',
-    district: 'Santarém',
-    postalCode: '2040-265',
+    street: '',
+    city: 'Portugal',
+    district: '',
+    postalCode: '',
     country: 'Portugal',
-    full: 'RUA DOM FERNANDO I 25 RIO MAIOR RIO MAIOR, Rio Maior, Santarém, 2040-265, Portugal'
+    full: 'Portugal & Netherlands Operations'
   },
   whatsapp: '+351 920 132 915',
   whatsappUrl: 'https://wa.me/351920132915?text=Hello%20Bluegate%20Work%2C%20I%20am%20interested%20in%20your%20workforce%20services.',
@@ -30,8 +30,8 @@ export const COMPANY_INFO = {
 };
 
 export const TRUST_METRICS = [
-  { label: 'European & Global Placements', value: '12,500+', change: '+24% YoY', icon: 'Users' },
-  { label: 'Partner Client Companies', value: '380+', change: 'Portugal & Netherlands', icon: 'Building2' },
+  { label: 'Placements', value: '500+', change: '+24% YoY', icon: 'Users' },
+  { label: 'Partner Client Companies', value: '10+', change: 'Portugal & Netherlands', icon: 'Building2' },
   { label: 'Average Rapid Deployment', value: '48 - 72h', change: 'Emergency ready', icon: 'Zap' },
   { label: 'EU Legal & Labor Compliance', value: '100%', change: 'A1 & ACT Certified', icon: 'ShieldCheck' }
 ];
@@ -235,15 +235,14 @@ export const INDUSTRIES: IndustryItem[] = [
 export const LOCATION_HUBS: LocationHub[] = [
   {
     id: 'portugal-hq',
-    name: 'Portugal Global Headquarters',
+    name: 'Portugal Headquarters',
     country: 'Portugal',
     type: 'Headquarters',
-    address: 'RUA DOM FERNANDO I 25 RIO MAIOR RIO MAIOR',
-    city: 'Rio Maior, Santarém (2040-265)',
-    focus: 'Executive Management, Southern European Operations, Legal & Consular Affairs, Central Candidate Processing',
+    city: 'Portugal',
+    focus: 'Executive Management, European Operations, Legal & Labor Affairs, Candidate Processing',
     phone: '+351 920 132 915',
     email: 'info@bluegatework.com',
-    activeWorkforceCount: '5,800+ Placed Workers',
+    activeWorkforceCount: 'Active Deployment',
     keyIndustries: ['Agriculture & Agri-Food', 'Industrial Manufacturing', 'Logistics Hubs', 'Renewable Energy']
   },
   {
@@ -464,7 +463,7 @@ export const TESTIMONIALS: Testimonial[] = [
     rating: 5,
     quote: 'Bluegate Work completely transformed our seasonal harvesting operations in Santarém. Their workforce outsourcing model gave us guaranteed output with on-site bilingual coordinators who handled everything from daily attendance to health protocols. A true strategic partner.',
     serviceUsed: 'Workforce Outsourcing',
-    location: 'Rio Maior / Santarém, Portugal'
+    location: 'Portugal'
   },
   {
     id: 'test-3',
@@ -667,10 +666,10 @@ export const DEFAULT_HEADER_CONFIG = {
   showTopWhatsApp: true,
   showTopLocation: true,
   showTopLicense: true,
-  topBarLocationText: 'Rio Maior (Portugal) • Netherlands • Global Corridors',
+  topBarLocationText: 'Portugal & Netherlands • European Workforce Provider',
   topBarWhatsAppBadgeText: 'WhatsApp Direct',
   topBarLicenseText: 'ACT Licença Nº 892/ACT',
-  showLogoTagline: true,
+  showLogoTagline: false,
   showNavHome: true,
   showNavServices: true,
   showNavIndustries: true,
@@ -822,7 +821,7 @@ export const DEFAULT_HOME_PAGE_CONTENT = {
   globalSection: {
     badge: 'European Reach & Global Talent Corridors',
     title: 'Connected Operations from Portugal to the Benelux & Beyond',
-    subtitle: 'Combining local headquarters in Rio Maior (Portugal) with active deployment hubs in the Netherlands and ethical international talent corridors.',
+    subtitle: 'Combining operations in Portugal with active deployment hubs in the Netherlands and ethical international talent corridors.',
     hubsTitle: 'Operational Footprint & Hubs'
   },
   processSection: {

@@ -83,26 +83,16 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate, onRequestQ
               <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                 <div>
                   <span className="text-[10px] font-extrabold tracking-widest text-[#D4AF37] uppercase">
-                    Global Headquarters
+                    Operations
                   </span>
                   <h3 className="text-xl font-bold font-heading text-white mt-0.5">
-                    {settings.addressHQ.country} ({settings.addressHQ.city})
+                    {settings.siteName} (Portugal)
                   </h3>
                 </div>
                 <span className="text-2xl">🇵🇹</span>
               </div>
 
               <div className="space-y-4 text-xs">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-1" />
-                  <div>
-                    <span className="text-slate-400 block">Registered Physical Address:</span>
-                    <strong className="text-white text-sm leading-snug block mt-0.5">
-                      {settings.addressHQ.full}
-                    </strong>
-                  </div>
-                </div>
-
                 <div className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-blue-400 shrink-0" />
                   <div>
@@ -160,13 +150,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate, onRequestQ
                     Benelux Operational Desk
                   </span>
                   <h4 className="text-base font-bold text-slate-900 mt-0.5">
-                    {settings.addressNetherlands.country} ({settings.addressNetherlands.city})
+                    Netherlands Operations
                   </h4>
                 </div>
                 <span className="text-2xl">🇳🇱</span>
               </div>
               <div className="text-xs space-y-2 text-slate-600">
-                <p className="font-medium text-slate-800">{settings.addressNetherlands.full}</p>
                 <div className="flex items-center gap-2 text-[11px] text-slate-500">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   <span>{settings.nenCertificate}</span>
